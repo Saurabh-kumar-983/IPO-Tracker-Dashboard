@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>IPO Tracker India</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>IPO Tracker India</h1>
+
+  <div class="tabs">
+    <button onclick="loadIPOs('Upcoming')">Upcoming</button>
+    <button onclick="loadIPOs('Open')">Open</button>
+    <button onclick="loadIPOs('Closed')">Closed</button>
+    <button onclick="loadIPOs()">All IPOs</button>
+  </div>
+
+  <div id="ipoList"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="app.js"></script>
+</body>
+</html>
