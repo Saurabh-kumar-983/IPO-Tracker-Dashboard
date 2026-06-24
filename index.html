@@ -1,10 +1,13 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>IPO Tracker India</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+
   <h1>IPO Tracker India</h1>
 
   <div class="tabs">
@@ -14,11 +17,12 @@
     <button onclick="loadIPOs()">All IPOs</button>
   </div>
 
-  <div id="ipoList"></div>
+  <div id="ipoList">
+    <p>Loading IPO data...</p>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="app.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="app.js"></script>
+
 </body>
 </html>
