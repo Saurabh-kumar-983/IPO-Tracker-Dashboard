@@ -1,12 +1,13 @@
-const SUPABASE_URL = "PASTE_YOUR_SUPABASE_PROJECT_URL_HERE";
-const SUPABASE_KEY = "PASTE_YOUR_SUPABASE_ANON_KEY_HERE";
+const SUPABASE_URL = "https://iizpmjortvijdwyydtec.supabase.co";
+
+const SUPABASE_KEY = "PASTE_YOUR_FULL_ANON_KEY_HERE";
 
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 async function loadIPOs(status = null) {
   const ipoList = document.getElementById("ipoList");
 
-  ipoList.innerHTML = "<p>Loading IPO data...</p>";
+  ipoList.innerHTML = "<p class='empty'>Loading IPO data...</p>";
 
   let query = supabase
     .from("ipos")
@@ -19,14 +20,20 @@ async function loadIPOs(status = null) {
 
   const { data, error } = await query;
 
+  console.log("IPO Data:", data);
+  console.log("Supabase Error:", error);
+
   if (error) {
-    console.error("Supabase Error:", error);
-    ipoList.innerHTML = "<p>Error loading IPO data.</p>";
+    ipoList.innerHTML = `
+      <p class="empty">Error loading IPO data: ${error.message}</p>
+    `;
     return;
   }
 
   if (!data || data.length === 0) {
-    ipoList.innerHTML = "<p>No IPO data found.</p>";
+    ipoList.innerHTML = `
+      <p class="empty">No IPO data found.</p>
+    `;
     return;
   }
 
@@ -39,10 +46,8 @@ async function loadIPOs(status = null) {
       <p><b>IPO Type:</b> ${ipo.ipo_type || "-"}</p>
       <p><b>Exchange:</b> ${ipo.exchange || "-"}</p>
 
-      <p>
-        <b>Open Date:</b> ${ipo.open_date || "-"} |
-        <b>Close Date:</b> ${ipo.close_date || "-"}
-      </p>
+      <p><b>Open Date:</b> ${ipo.open_date || "-"}</p>
+      <p><b>Close Date:</b> ${ipo.close_date || "-"}</p>
 
       <p><b>Price Band:</b> ${ipo.price_band || "-"}</p>
       <p><b>Lot Size:</b> ${ipo.lot_size || "-"}</p>
