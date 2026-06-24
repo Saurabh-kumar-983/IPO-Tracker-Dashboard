@@ -1,9 +1,17 @@
-const SUPABASE_URL = "YOUR_SUPABASE_PROJECT_URL";
-const SUPABASE_KEY = "YOUR_SUPABASE_ANON_KEY";
+const SUPABASE_URL = "PASTE_YOUR_SUPABASE_PROJECT_URL_HERE";
+const SUPABASE_KEY = "PASTE_YOUR_SUPABASE_ANON_KEY_HERE";
+
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 async function loadIPOs(status = null) {
-  let query = supabase.from("ipos").select("*").order("open_date", { ascending: true });
+  const ipoList = document.getElementById("ipoList");
+
+  ipoList.innerHTML = "<p>Loading IPO data...</p>";
+
+  let query = supabase
+    .from("ipos")
+    .select("*")
+    .order("open_date", { ascending: true });
 
   if (status) {
     query = query.eq("status", status);
@@ -12,23 +20,49 @@ async function loadIPOs(status = null) {
   const { data, error } = await query;
 
   if (error) {
-    document.getElementById("ipoList").innerHTML = "Error loading IPO data";
+    console.error("Supabase Error:", error);
+    ipoList.innerHTML = "<p>Error loading IPO data.</p>";
     return;
   }
 
-  document.getElementById("ipoList").innerHTML = data.map(ipo => `
+  if (!data || data.length === 0) {
+    ipoList.innerHTML = "<p>No IPO data found.</p>";
+    return;
+  }
+
+  ipoList.innerHTML = data.map(ipo => `
     <div class="card">
-      <h2>${ipo.company_name}</h2>
+      <h2>${ipo.company_name || "-"}</h2>
+
       <p><b>Symbol:</b> ${ipo.symbol || "-"}</p>
-      <p><b>Status:</b> ${ipo.status}</p>
-      <p><b>Open:</b> ${ipo.open_date || "-"} | <b>Close:</b> ${ipo.close_date || "-"}</p>
+      <p><b>Status:</b> ${ipo.status || "-"}</p>
+      <p><b>IPO Type:</b> ${ipo.ipo_type || "-"}</p>
+      <p><b>Exchange:</b> ${ipo.exchange || "-"}</p>
+
+      <p>
+        <b>Open Date:</b> ${ipo.open_date || "-"} |
+        <b>Close Date:</b> ${ipo.close_date || "-"}
+      </p>
+
       <p><b>Price Band:</b> ${ipo.price_band || "-"}</p>
       <p><b>Lot Size:</b> ${ipo.lot_size || "-"}</p>
       <p><b>Issue Size:</b> ${ipo.issue_size || "-"}</p>
+
       <p><b>Registrar:</b> ${ipo.registrar || "-"}</p>
-      <a href="${ipo.registrar_url || '#'}" target="_blank">Check Allotment</a>
+      <p><b>Allotment Date:</b> ${ipo.allotment_date || "-"}</p>
+      <p><b>Refund Date:</b> ${ipo.refund_date || "-"}</p>
+      <p><b>Listing Date:</b> ${ipo.listing_date || "-"}</p>
+
+      <p><b>Remarks:</b> ${ipo.remarks || "-"}</p>
+
+      <div class="links">
+        ${ipo.rhp_url ? `<a href="${ipo.rhp_url}" target="_blank">View RHP</a>` : ""}
+        ${ipo.registrar_url ? `<a href="${ipo.registrar_url}" target="_blank">Check Allotment</a>` : ""}
+      </div>
     </div>
   `).join("");
 }
 
-loadIPOs();
+document.addEventListener("DOMContentLoaded", () => {
+  loadIPOs();
+});
