@@ -27,45 +27,26 @@ async function fetchAllIPOs() {
 
 function updateStats(data) {
   document.getElementById("totalCount").innerText = data.length;
-  document.getElementById("upcomingCount").innerText =
-    data.filter(ipo => ipo.status === "Upcoming").length;
-  document.getElementById("openCount").innerText =
-    data.filter(ipo => ipo.status === "Open").length;
-  document.getElementById("closedCount").innerText =
-    data.filter(ipo => ipo.status === "Closed").length;
+  document.getElementById("upcomingCount").innerText = data.filter(ipo => ipo.status === "Upcoming").length;
+  document.getElementById("openCount").innerText = data.filter(ipo => ipo.status === "Open").length;
+  document.getElementById("closedCount").innerText = data.filter(ipo => ipo.status === "Closed").length;
 }
 
 function applyFilters() {
-  const searchInput = document.getElementById("searchInput");
-  const statusFilter = document.getElementById("statusFilter");
-
-  const searchText = searchInput ? searchInput.value.toLowerCase().trim() : "";
-  const selectedStatus = statusFilter ? statusFilter.value : "";
+  const searchText = document.getElementById("searchInput").value.toLowerCase().trim();
+  const selectedStatus = document.getElementById("statusFilter").value;
 
   const filteredIPOs = allIPOs.filter(ipo => {
     const companyName = (ipo.company_name || "").toLowerCase();
     const symbol = (ipo.symbol || "").toLowerCase();
 
-    const matchesSearch =
-      companyName.includes(searchText) || symbol.includes(searchText);
-
-    const matchesStatus =
-      selectedStatus === "" || ipo.status === selectedStatus;
+    const matchesSearch = companyName.includes(searchText) || symbol.includes(searchText);
+    const matchesStatus = selectedStatus === "" || ipo.status === selectedStatus;
 
     return matchesSearch && matchesStatus;
   });
 
   renderIPOs(filteredIPOs);
-}
-
-function loadIPOs(status = null) {
-  const statusFilter = document.getElementById("statusFilter");
-
-  if (statusFilter) {
-    statusFilter.value = status || "";
-  }
-
-  applyFilters();
 }
 
 function getBadgeClass(status) {
@@ -87,80 +68,39 @@ function renderIPOs(data) {
   }
 
   ipoList.innerHTML = data.map(ipo => `
-    <div class="card">
+    <div class="card premium-card">
       <div class="card-top">
         <div>
+          <span class="${getBadgeClass(ipo.status)}">${getSafeValue(ipo.status)}</span>
           <h2>${getSafeValue(ipo.company_name)}</h2>
           <div class="symbol">
-            ${getSafeValue(ipo.symbol)} · ${getSafeValue(ipo.exchange)}
+            ${getSafeValue(ipo.symbol)} · ${getSafeValue(ipo.exchange)} · ${getSafeValue(ipo.ipo_type)}
           </div>
         </div>
-        <span class="${getBadgeClass(ipo.status)}">${getSafeValue(ipo.status)}</span>
       </div>
 
-      <div class="info-grid">
-        <div class="info-box">
-          <b>IPO Type</b>
-          ${getSafeValue(ipo.ipo_type)}
-        </div>
-
-        <div class="info-box">
-          <b>Price Band</b>
-          ${getSafeValue(ipo.price_band)}
-        </div>
-
-        <div class="info-box">
-          <b>Lot Size</b>
-          ${getSafeValue(ipo.lot_size)}
-        </div>
-
-        <div class="info-box">
-          <b>Issue Size</b>
-          ${getSafeValue(ipo.issue_size)}
-        </div>
-
-        <div class="info-box">
-          <b>Open Date</b>
-          ${getSafeValue(ipo.open_date)}
-        </div>
-
-        <div class="info-box">
-          <b>Close Date</b>
-          ${getSafeValue(ipo.close_date)}
-        </div>
-
-        <div class="info-box">
-          <b>Registrar</b>
-          ${getSafeValue(ipo.registrar)}
-        </div>
-
-        <div class="info-box">
-          <b>Listing Date</b>
-          ${getSafeValue(ipo.listing_date)}
-        </div>
+      <div class="highlight-row">
+        <div><span>Price Band</span><strong>${getSafeValue(ipo.price_band)}</strong></div>
+        <div><span>Lot Size</span><strong>${getSafeValue(ipo.lot_size)}</strong></div>
+        <div><span>Issue Size</span><strong>${getSafeValue(ipo.issue_size)}</strong></div>
       </div>
 
-      <div class="dates">
-        <b>Important Dates:</b><br>
-        Allotment: ${getSafeValue(ipo.allotment_date)} |
-        Refund: ${getSafeValue(ipo.refund_date)} |
-        Listing: ${getSafeValue(ipo.listing_date)}
+      <div class="timeline">
+        <div><b>Open</b><span>${getSafeValue(ipo.open_date)}</span></div>
+        <div><b>Close</b><span>${getSafeValue(ipo.close_date)}</span></div>
+        <div><b>Allotment</b><span>${getSafeValue(ipo.allotment_date)}</span></div>
+        <div><b>Listing</b><span>${getSafeValue(ipo.listing_date)}</span></div>
       </div>
 
-      <p><b>Remarks:</b> ${ipo.remarks || "No remarks added."}</p>
+      <div class="ipo-meta">
+        <p><b>Registrar:</b> ${getSafeValue(ipo.registrar)}</p>
+        <p><b>Refund Date:</b> ${getSafeValue(ipo.refund_date)}</p>
+        <p><b>Remarks:</b> ${ipo.remarks || "Important IPO details will be updated here."}</p>
+      </div>
 
       <div class="links">
-        ${
-          ipo.rhp_url
-            ? `<a class="secondary" href="${ipo.rhp_url}" target="_blank">View RHP</a>`
-            : ""
-        }
-
-        ${
-          ipo.registrar_url
-            ? `<a href="${ipo.registrar_url}" target="_blank">Check Allotment</a>`
-            : ""
-        }
+        ${ipo.rhp_url ? `<a class="secondary" href="${ipo.rhp_url}" target="_blank">View RHP</a>` : ""}
+        ${ipo.registrar_url ? `<a href="${ipo.registrar_url}" target="_blank">Check Allotment</a>` : ""}
       </div>
     </div>
   `).join("");
