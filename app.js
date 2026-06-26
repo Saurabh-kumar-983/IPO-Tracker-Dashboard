@@ -4,57 +4,166 @@ const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-async function loadIPOs(status = null) {
-  const ipoList = document.getElementById("ipoList");
-  ipoList.innerHTML = "<p>Loading IPO data...</p>";
+let allIPOs = [];
 
-  let query = supabaseClient
+async function fetchAllIPOs() {
+  const ipoList = document.getElementById("ipoList");
+  ipoList.innerHTML = `<p class="empty">Loading IPO data...</p>`;
+
+  const { data, error } = await supabaseClient
     .from("ipos")
     .select("*")
     .order("open_date", { ascending: true });
 
-  if (status) {
-    query = query.eq("status", status);
-  }
-
-  const { data, error } = await query;
-
   if (error) {
-    ipoList.innerHTML = `<p>Error loading IPO data: ${error.message}</p>`;
+    ipoList.innerHTML = `<p class="empty">Error loading IPO data: ${error.message}</p>`;
     return;
   }
 
+  allIPOs = data || [];
+  updateStats(allIPOs);
+  renderIPOs(allIPOs);
+}
+
+function updateStats(data) {
+  document.getElementById("totalCount").innerText = data.length;
+  document.getElementById("upcomingCount").innerText =
+    data.filter(ipo => ipo.status === "Upcoming").length;
+  document.getElementById("openCount").innerText =
+    data.filter(ipo => ipo.status === "Open").length;
+  document.getElementById("closedCount").innerText =
+    data.filter(ipo => ipo.status === "Closed").length;
+}
+
+function applyFilters() {
+  const searchInput = document.getElementById("searchInput");
+  const statusFilter = document.getElementById("statusFilter");
+
+  const searchText = searchInput ? searchInput.value.toLowerCase().trim() : "";
+  const selectedStatus = statusFilter ? statusFilter.value : "";
+
+  const filteredIPOs = allIPOs.filter(ipo => {
+    const companyName = (ipo.company_name || "").toLowerCase();
+    const symbol = (ipo.symbol || "").toLowerCase();
+
+    const matchesSearch =
+      companyName.includes(searchText) || symbol.includes(searchText);
+
+    const matchesStatus =
+      selectedStatus === "" || ipo.status === selectedStatus;
+
+    return matchesSearch && matchesStatus;
+  });
+
+  renderIPOs(filteredIPOs);
+}
+
+function loadIPOs(status = null) {
+  const statusFilter = document.getElementById("statusFilter");
+
+  if (statusFilter) {
+    statusFilter.value = status || "";
+  }
+
+  applyFilters();
+}
+
+function getBadgeClass(status) {
+  if (status === "Open") return "badge badge-open";
+  if (status === "Closed") return "badge badge-closed";
+  return "badge badge-upcoming";
+}
+
+function getSafeValue(value) {
+  return value || "-";
+}
+
+function renderIPOs(data) {
+  const ipoList = document.getElementById("ipoList");
+
   if (!data || data.length === 0) {
-    ipoList.innerHTML = "<p>No IPO data found.</p>";
+    ipoList.innerHTML = `<p class="empty">No IPO data found.</p>`;
     return;
   }
 
   ipoList.innerHTML = data.map(ipo => `
     <div class="card">
-      <h2>${ipo.company_name || "-"}</h2>
-      <p><b>Symbol:</b> ${ipo.symbol || "-"}</p>
-      <p><b>Status:</b> ${ipo.status || "-"}</p>
-      <p><b>IPO Type:</b> ${ipo.ipo_type || "-"}</p>
-      <p><b>Exchange:</b> ${ipo.exchange || "-"}</p>
-      <p><b>Open Date:</b> ${ipo.open_date || "-"}</p>
-      <p><b>Close Date:</b> ${ipo.close_date || "-"}</p>
-      <p><b>Price Band:</b> ${ipo.price_band || "-"}</p>
-      <p><b>Lot Size:</b> ${ipo.lot_size || "-"}</p>
-      <p><b>Issue Size:</b> ${ipo.issue_size || "-"}</p>
-      <p><b>Registrar:</b> ${ipo.registrar || "-"}</p>
-      <p><b>Allotment Date:</b> ${ipo.allotment_date || "-"}</p>
-      <p><b>Refund Date:</b> ${ipo.refund_date || "-"}</p>
-      <p><b>Listing Date:</b> ${ipo.listing_date || "-"}</p>
-      <p><b>Remarks:</b> ${ipo.remarks || "-"}</p>
+      <div class="card-top">
+        <div>
+          <h2>${getSafeValue(ipo.company_name)}</h2>
+          <div class="symbol">
+            ${getSafeValue(ipo.symbol)} · ${getSafeValue(ipo.exchange)}
+          </div>
+        </div>
+        <span class="${getBadgeClass(ipo.status)}">${getSafeValue(ipo.status)}</span>
+      </div>
+
+      <div class="info-grid">
+        <div class="info-box">
+          <b>IPO Type</b>
+          ${getSafeValue(ipo.ipo_type)}
+        </div>
+
+        <div class="info-box">
+          <b>Price Band</b>
+          ${getSafeValue(ipo.price_band)}
+        </div>
+
+        <div class="info-box">
+          <b>Lot Size</b>
+          ${getSafeValue(ipo.lot_size)}
+        </div>
+
+        <div class="info-box">
+          <b>Issue Size</b>
+          ${getSafeValue(ipo.issue_size)}
+        </div>
+
+        <div class="info-box">
+          <b>Open Date</b>
+          ${getSafeValue(ipo.open_date)}
+        </div>
+
+        <div class="info-box">
+          <b>Close Date</b>
+          ${getSafeValue(ipo.close_date)}
+        </div>
+
+        <div class="info-box">
+          <b>Registrar</b>
+          ${getSafeValue(ipo.registrar)}
+        </div>
+
+        <div class="info-box">
+          <b>Listing Date</b>
+          ${getSafeValue(ipo.listing_date)}
+        </div>
+      </div>
+
+      <div class="dates">
+        <b>Important Dates:</b><br>
+        Allotment: ${getSafeValue(ipo.allotment_date)} |
+        Refund: ${getSafeValue(ipo.refund_date)} |
+        Listing: ${getSafeValue(ipo.listing_date)}
+      </div>
+
+      <p><b>Remarks:</b> ${ipo.remarks || "No remarks added."}</p>
 
       <div class="links">
-        ${ipo.rhp_url ? `<a href="${ipo.rhp_url}" target="_blank">View RHP</a>` : ""}
-        ${ipo.registrar_url ? `<a href="${ipo.registrar_url}" target="_blank">Check Allotment</a>` : ""}
+        ${
+          ipo.rhp_url
+            ? `<a class="secondary" href="${ipo.rhp_url}" target="_blank">View RHP</a>`
+            : ""
+        }
+
+        ${
+          ipo.registrar_url
+            ? `<a href="${ipo.registrar_url}" target="_blank">Check Allotment</a>`
+            : ""
+        }
       </div>
     </div>
   `).join("");
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  loadIPOs();
-});
+document.addEventListener("DOMContentLoaded", fetchAllIPOs);
