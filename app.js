@@ -3,17 +3,20 @@ const SUPABASE_URL = "https://iizpmjortvijdwyydtec.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpenBtam9ydHZpamR3eXlkdGVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyOTEwMTcsImV4cCI6MjA5Nzg2NzAxN30.41CO6OSasC1b6m6uoNzURgNQGymOciABNpr1-FVO-8w";
 
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
 let allIPOs = [];
 
 async function fetchAllIPOs() {
+  const tableBody = document.getElementById("ipoTableBody");
+  tableBody.innerHTML = `<tr><td colspan="11">Loading IPO data...</td></tr>`;
+
   const { data, error } = await supabaseClient
     .from("ipos")
     .select("*")
     .order("open_date", { ascending: true });
 
   if (error) {
-    document.getElementById("ipoTableBody").innerHTML =
-      `<tr><td colspan="11">Error: ${error.message}</td></tr>`;
+    tableBody.innerHTML = `<tr><td colspan="11">Error: ${error.message}</td></tr>`;
     return;
   }
 
@@ -24,9 +27,12 @@ async function fetchAllIPOs() {
 
 function updateStats(data) {
   document.getElementById("totalCount").innerText = data.length;
-  document.getElementById("upcomingCount").innerText = data.filter(x => x.status === "Upcoming").length;
-  document.getElementById("openCount").innerText = data.filter(x => x.status === "Open").length;
-  document.getElementById("closedCount").innerText = data.filter(x => x.status === "Closed").length;
+  document.getElementById("upcomingCount").innerText =
+    data.filter(x => x.status === "Upcoming").length;
+  document.getElementById("openCount").innerText =
+    data.filter(x => x.status === "Open").length;
+  document.getElementById("closedCount").innerText =
+    data.filter(x => x.status === "Closed").length;
 }
 
 function applyFilters() {
@@ -58,6 +64,30 @@ function resetFilters() {
   document.getElementById("statusFilter").value = "";
   document.getElementById("typeFilter").value = "";
   renderTable(allIPOs);
+}
+
+function showSection(sectionName) {
+  if (sectionName === "Dashboard") {
+    resetFilters();
+    return;
+  }
+
+  if (sectionName === "Current IPOs") {
+    quickFilter("Open");
+    return;
+  }
+
+  if (sectionName === "Upcoming IPOs") {
+    quickFilter("Upcoming");
+    return;
+  }
+
+  if (sectionName === "Past IPOs") {
+    quickFilter("Closed");
+    return;
+  }
+
+  alert(sectionName + " section coming soon.");
 }
 
 function badgeClass(status) {
@@ -120,8 +150,11 @@ function downloadCSV() {
     ])
   ];
 
-  const csv = rows.map(r => r.map(x => `"${x}"`).join(",")).join("\n");
-  const blob = new Blob([csv], { type: "text/csv" });
+  const csv = rows.map(row =>
+    row.map(value => `"${String(value).replace(/"/g, '""')}"`).join(",")
+  ).join("\n");
+
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
   const url = URL.createObjectURL(blob);
 
   const a = document.createElement("a");
