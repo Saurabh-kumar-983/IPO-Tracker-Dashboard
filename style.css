@@ -1,71 +1,238 @@
+* {
+  box-sizing: border-box;
+}
+
 body {
-  font-family: Arial, sans-serif;
-  background: #f4f7fb;
   margin: 0;
-  padding: 30px;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: #f3f6fb;
+  color: #111827;
 }
 
-h1 {
-  text-align: center;
-  color: #000;
-}
-
-.tabs {
-  text-align: center;
-  margin-bottom: 30px;
-}
-
-button {
-  background: #071124;
+.hero {
+  background: linear-gradient(135deg, #06111f, #123b7a, #2563eb);
   color: white;
-  border: none;
-  padding: 12px 20px;
-  margin: 6px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 15px;
+  padding: 55px 25px 80px;
+  text-align: center;
 }
 
-button:hover {
-  background: #1d4ed8;
+.tag {
+  color: #bfdbfe;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+}
+
+.hero h1 {
+  font-size: 46px;
+  margin: 12px 0;
+}
+
+.hero p {
+  max-width: 780px;
+  margin: auto;
+  color: #dbeafe;
+  font-size: 18px;
+}
+
+.stats {
+  max-width: 1150px;
+  margin: -45px auto 25px;
+  padding: 0 22px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+
+.stat-card {
+  background: white;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 16px 35px rgba(15, 23, 42, 0.14);
+  border: 1px solid #e5e7eb;
+}
+
+.stat-card span {
+  color: #64748b;
+  font-size: 14px;
+}
+
+.stat-card h2 {
+  font-size: 34px;
+  margin: 8px 0 0;
+  color: #0f172a;
+}
+
+.controls {
+  max-width: 1150px;
+  margin: 25px auto;
+  padding: 0 22px;
+  display: flex;
+  gap: 14px;
+}
+
+.controls input,
+.controls select {
+  padding: 14px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 14px;
+  font-size: 15px;
+  outline: none;
+}
+
+.controls input {
+  flex: 1;
+}
+
+.controls select {
+  width: 180px;
+}
+
+.investor-note {
+  max-width: 1105px;
+  margin: 0 auto 20px;
+  background: #eff6ff;
+  border-left: 5px solid #2563eb;
+  padding: 15px 18px;
+  border-radius: 12px;
+  color: #1e3a8a;
 }
 
 #ipoList {
-  max-width: 900px;
+  max-width: 1150px;
   margin: auto;
+  padding: 22px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
 }
 
 .card {
   background: white;
-  padding: 20px;
-  margin-bottom: 18px;
-  border-radius: 14px;
-  box-shadow: 0 8px 22px rgba(0,0,0,0.08);
+  border-radius: 22px;
+  padding: 24px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+  transition: 0.25s;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 38px rgba(15, 23, 42, 0.14);
+}
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: start;
 }
 
 .card h2 {
-  margin-top: 0;
-  color: #111827;
+  margin: 0;
+  color: #0f172a;
+  font-size: 24px;
 }
 
-.card p {
-  margin: 8px 0;
-  color: #374151;
+.symbol {
+  color: #64748b;
+  margin-top: 5px;
+}
+
+.badge {
+  padding: 7px 13px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.badge-upcoming {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.badge-open {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.badge-closed {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.info-grid {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.info-box {
+  background: #f8fafc;
+  border-radius: 14px;
+  padding: 12px;
+  font-size: 14px;
+}
+
+.info-box b {
+  display: block;
+  color: #0f172a;
+  margin-bottom: 4px;
+}
+
+.dates {
+  margin-top: 16px;
+  padding: 14px;
+  background: #fff7ed;
+  border-radius: 14px;
+  color: #7c2d12;
+}
+
+.links {
+  margin-top: 18px;
 }
 
 .links a {
   display: inline-block;
-  margin-top: 10px;
   margin-right: 10px;
-  color: white;
+  margin-top: 8px;
   background: #2563eb;
-  padding: 9px 14px;
-  border-radius: 8px;
+  color: white;
+  padding: 11px 15px;
+  border-radius: 12px;
   text-decoration: none;
+  font-weight: 700;
+}
+
+.links a.secondary {
+  background: #0f172a;
 }
 
 .empty {
+  grid-column: 1 / -1;
   text-align: center;
-  color: #6b7280;
+  color: #64748b;
   font-size: 18px;
+}
+
+@media (max-width: 850px) {
+  .stats,
+  #ipoList {
+    grid-template-columns: 1fr;
+  }
+
+  .controls {
+    flex-direction: column;
+  }
+
+  .controls select {
+    width: 100%;
+  }
+
+  .hero h1 {
+    font-size: 34px;
+  }
 }
