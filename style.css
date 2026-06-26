@@ -122,15 +122,30 @@ body {
   box-shadow: 0 18px 38px rgba(15, 23, 42, 0.14);
 }
 
+.premium-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.premium-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: linear-gradient(90deg, #2563eb, #22c55e);
+}
+
 .card-top {
   display: flex;
   justify-content: space-between;
   gap: 12px;
-  align-items: start;
+  align-items: flex-start;
 }
 
 .card h2 {
-  margin: 0;
+  margin: 10px 0 4px;
   color: #0f172a;
   font-size: 24px;
 }
@@ -141,6 +156,7 @@ body {
 }
 
 .badge {
+  display: inline-block;
   padding: 7px 13px;
   border-radius: 999px;
   font-size: 13px;
@@ -163,32 +179,65 @@ body {
   color: #991b1b;
 }
 
-.info-grid {
-  margin-top: 18px;
+.highlight-row {
+  margin-top: 20px;
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
 }
 
-.info-box {
+.highlight-row div {
   background: #f8fafc;
-  border-radius: 14px;
-  padding: 12px;
-  font-size: 14px;
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
 }
 
-.info-box b {
+.highlight-row span {
   display: block;
-  color: #0f172a;
-  margin-bottom: 4px;
+  font-size: 13px;
+  color: #64748b;
+  margin-bottom: 6px;
 }
 
-.dates {
-  margin-top: 16px;
-  padding: 14px;
-  background: #fff7ed;
-  border-radius: 14px;
-  color: #7c2d12;
+.highlight-row strong {
+  font-size: 20px;
+  color: #0f172a;
+}
+
+.timeline {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  background: #eff6ff;
+  border-radius: 16px;
+  padding: 16px;
+  gap: 10px;
+}
+
+.timeline div {
+  border-left: 3px solid #2563eb;
+  padding-left: 10px;
+}
+
+.timeline b {
+  display: block;
+  color: #1e3a8a;
+  font-size: 13px;
+}
+
+.timeline span {
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.ipo-meta {
+  margin-top: 18px;
+}
+
+.ipo-meta p {
+  margin: 9px 0;
+  color: #334155;
 }
 
 .links {
@@ -234,5 +283,12 @@ body {
 
   .hero h1 {
     font-size: 34px;
+  }
+}
+
+@media (max-width: 700px) {
+  .highlight-row,
+  .timeline {
+    grid-template-columns: 1fr;
   }
 }
