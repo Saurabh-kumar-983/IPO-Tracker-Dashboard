@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>IPO Admin Panel</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
@@ -11,31 +13,31 @@
     <div class="logo">🔐</div>
     <div>
       <h2>IPO Admin Panel</h2>
-      <p>Manage IPO records</p>
+      <p>Manage IPO records and live updates</p>
     </div>
   </div>
   <a href="index.html" class="download">Back to Dashboard</a>
 </header>
 
 <section class="filter-panel" id="loginBox">
-  <input id="email" placeholder="Admin Email">
-  <input id="password" type="password" placeholder="Password">
+  <input id="email" placeholder="Admin Email" />
+  <input id="password" type="password" placeholder="Password" />
   <button onclick="loginAdmin()">Login</button>
 </section>
 
 <section class="filter-panel" id="adminBox" style="display:none;">
-  <input id="company_name" placeholder="Company Name">
-  <input id="symbol" placeholder="Symbol">
-  <input id="ipo_type" placeholder="IPO Type">
-  <input id="exchange" placeholder="Exchange">
-  <input id="price_band" placeholder="Price Band">
-  <input id="lot_size" placeholder="Lot Size">
-  <input id="issue_size" placeholder="Issue Size">
-  <input id="open_date" type="date">
-  <input id="close_date" type="date">
-  <input id="allotment_date" type="date">
-  <input id="refund_date" type="date">
-  <input id="listing_date" type="date">
+  <input id="company_name" placeholder="Company Name" />
+  <input id="symbol" placeholder="Symbol" />
+  <input id="ipo_type" placeholder="IPO Type: Mainboard/SME" />
+  <input id="exchange" placeholder="Exchange" />
+  <input id="price_band" placeholder="Price Band" />
+  <input id="lot_size" placeholder="Lot Size" />
+  <input id="issue_size" placeholder="Issue Size" />
+  <input id="open_date" type="date" />
+  <input id="close_date" type="date" />
+  <input id="allotment_date" type="date" />
+  <input id="refund_date" type="date" />
+  <input id="listing_date" type="date" />
 
   <select id="status">
     <option value="Upcoming">Upcoming</option>
@@ -43,13 +45,28 @@
     <option value="Closed">Closed</option>
   </select>
 
-  <input id="registrar" placeholder="Registrar">
-  <input id="rhp_url" placeholder="RHP URL">
-  <input id="registrar_url" placeholder="Registrar URL">
-  <input id="remarks" placeholder="Remarks">
+  <input id="registrar" placeholder="Registrar" />
+  <input id="rhp_url" placeholder="RHP URL" />
+  <input id="registrar_url" placeholder="Registrar URL" />
+  <input id="remarks" placeholder="Remarks" />
 
   <button onclick="saveIPO()">Save IPO</button>
+  <button onclick="clearForm()">Clear</button>
   <button onclick="logoutAdmin()">Logout</button>
+</section>
+
+<section class="filter-panel" id="liveBox" style="display:none;">
+  <select id="live_ipo_id">
+    <option value="">Select IPO for Live Update</option>
+  </select>
+
+  <input id="gmp" placeholder="GMP e.g. ₹45" />
+  <input id="retail_subscription" placeholder="Retail Subscription e.g. 2.45x" />
+  <input id="qib_subscription" placeholder="QIB Subscription e.g. 5.20x" />
+  <input id="nii_subscription" placeholder="NII Subscription e.g. 8.10x" />
+  <input id="total_subscription" placeholder="Total Subscription e.g. 4.70x" />
+
+  <button onclick="saveLiveUpdate()">Save Live Update</button>
 </section>
 
 <section class="table-card">
@@ -67,11 +84,13 @@
           <th>Status</th>
           <th>Open</th>
           <th>Close</th>
+          <th>GMP</th>
+          <th>Total Sub.</th>
           <th>Actions</th>
         </tr>
       </thead>
       <tbody id="adminTable">
-        <tr><td colspan="6">Login to manage records</td></tr>
+        <tr><td colspan="8">Login to manage records</td></tr>
       </tbody>
     </table>
   </div>
