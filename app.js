@@ -112,7 +112,7 @@ function renderTable(data) {
   tbody.innerHTML = data.map(ipo => `
     <tr>
       <td>
-        <span class="company">${safe(ipo.company_name)}</span>
+        <a class="company" href="ipo.html?id=${ipo.id}">${safe(ipo.company_name)}</a>
         <span class="sub">${safe(ipo.symbol)} · ${safe(ipo.exchange)}</span>
       </td>
       <td><span class="type">${safe(ipo.ipo_type)}</span></td>
