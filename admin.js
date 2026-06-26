@@ -22,6 +22,8 @@ async function loginAdmin() {
 
   document.getElementById("loginBox").style.display = "none";
   document.getElementById("adminBox").style.display = "grid";
+  document.getElementById("liveBox").style.display = "grid";
+
   loadAdminIPOs();
 }
 
@@ -59,14 +61,9 @@ async function saveIPO() {
   let result;
 
   if (editingId) {
-    result = await supabaseClient
-      .from("ipos")
-      .update(ipoData)
-      .eq("id", editingId);
+    result = await supabaseClient.from("ipos").update(ipoData).eq("id", editingId);
   } else {
-    result = await supabaseClient
-      .from("ipos")
-      .insert([ipoData]);
+    result = await supabaseClient.from("ipos").insert([ipoData]);
   }
 
   if (result.error) {
@@ -81,33 +78,132 @@ async function saveIPO() {
   loadAdminIPOs();
 }
 
+async function saveLiveUpdate() {
+  const ipoId = document.getElementById("live_ipo_id").value;
+
+  if (!ipoId) {
+    alert("Select IPO first.");
+    return;
+  }
+
+  const liveData = {
+    ipo_id: Number(ipoId),
+    gmp: document.getElementById("gmp").value.trim(),
+    retail_subscription: document.getElementById("retail_subscription").value.trim(),
+    qib_subscription: document.getElementById("qib_subscription").value.trim(),
+    nii_subscription: document.getElementById("nii_subscription").value.trim(),
+    total_subscription: document.getElementById("total_subscription").value.trim(),
+    last_updated: new Date().toISOString()
+  };
+
+  const { data: existing } = await supabaseClient
+    .from("ipo_live_updates")
+    .select("id")
+    .eq("ipo_id", Number(ipoId))
+    .maybeSingle();
+
+  let result;
+
+  if (existing) {
+    result = await supabaseClient
+      .from("ipo_live_updates")
+      .update(liveData)
+      .eq("ipo_id", Number(ipoId));
+  } else {
+    result = await supabaseClient
+      .from("ipo_live_updates")
+      .insert([liveData]);
+  }
+
+  if (result.error) {
+    alert(result.error.message);
+    return;
+  }
+
+  alert("Live update saved successfully.");
+  clearLiveForm();
+  loadAdminIPOs();
+}
+
 async function loadAdminIPOs() {
   const { data, error } = await supabaseClient
     .from("ipos")
-    .select("*")
+    .select(`
+      *,
+      ipo_live_updates (
+        gmp,
+        retail_subscription,
+        qib_subscription,
+        nii_subscription,
+        total_subscription,
+        last_updated
+      )
+    `)
     .order("open_date", { ascending: true });
 
   if (error) {
     document.getElementById("adminTable").innerHTML =
-      `<tr><td colspan="6">${error.message}</td></tr>`;
+      `<tr><td colspan="8">${error.message}</td></tr>`;
     return;
   }
 
   document.getElementById("adminCount").innerText = `${data.length} records`;
+  populateLiveDropdown(data);
 
-  document.getElementById("adminTable").innerHTML = data.map(ipo => `
-    <tr>
-      <td>${ipo.company_name || "-"}</td>
-      <td>${ipo.symbol || "-"}</td>
-      <td>${ipo.status || "-"}</td>
-      <td>${ipo.open_date || "-"}</td>
-      <td>${ipo.close_date || "-"}</td>
-      <td class="actions">
-        <a onclick="editIPO(${ipo.id})">Edit</a>
-        <a class="blue" onclick="deleteIPO(${ipo.id})">Delete</a>
-      </td>
-    </tr>
-  `).join("");
+  document.getElementById("adminTable").innerHTML = data.map(ipo => {
+    const live = ipo.ipo_live_updates && ipo.ipo_live_updates.length
+      ? ipo.ipo_live_updates[0]
+      : {};
+
+    return `
+      <tr>
+        <td>${ipo.company_name || "-"}</td>
+        <td>${ipo.symbol || "-"}</td>
+        <td><span class="${badgeClass(ipo.status)}">${ipo.status || "-"}</span></td>
+        <td>${ipo.open_date || "-"}</td>
+        <td>${ipo.close_date || "-"}</td>
+        <td>${live.gmp || "-"}</td>
+        <td>${live.total_subscription || "-"}</td>
+        <td class="actions">
+          <a onclick="editIPO(${ipo.id})">Edit</a>
+          <a onclick="loadLiveForEdit(${ipo.id})">Live</a>
+          <a class="blue" onclick="deleteIPO(${ipo.id})">Delete</a>
+        </td>
+      </tr>
+    `;
+  }).join("");
+}
+
+function populateLiveDropdown(ipos) {
+  const select = document.getElementById("live_ipo_id");
+
+  select.innerHTML = `<option value="">Select IPO for Live Update</option>` +
+    ipos.map(ipo => `
+      <option value="${ipo.id}">${ipo.company_name || "-"} (${ipo.symbol || "-"})</option>
+    `).join("");
+}
+
+async function loadLiveForEdit(ipoId) {
+  document.getElementById("live_ipo_id").value = ipoId;
+
+  const { data, error } = await supabaseClient
+    .from("ipo_live_updates")
+    .select("*")
+    .eq("ipo_id", ipoId)
+    .maybeSingle();
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  document.getElementById("gmp").value = data?.gmp || "";
+  document.getElementById("retail_subscription").value = data?.retail_subscription || "";
+  document.getElementById("qib_subscription").value = data?.qib_subscription || "";
+  document.getElementById("nii_subscription").value = data?.nii_subscription || "";
+  document.getElementById("total_subscription").value = data?.total_subscription || "";
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 async function editIPO(id) {
@@ -135,10 +231,7 @@ async function editIPO(id) {
 async function deleteIPO(id) {
   if (!confirm("Delete this IPO record?")) return;
 
-  const { error } = await supabaseClient
-    .from("ipos")
-    .delete()
-    .eq("id", id);
+  const { error } = await supabaseClient.from("ipos").delete().eq("id", id);
 
   if (error) {
     alert(error.message);
@@ -151,6 +244,22 @@ async function deleteIPO(id) {
 function clearForm() {
   document.querySelectorAll("#adminBox input").forEach(input => input.value = "");
   document.getElementById("status").value = "Upcoming";
+  editingId = null;
+}
+
+function clearLiveForm() {
+  document.getElementById("live_ipo_id").value = "";
+  document.getElementById("gmp").value = "";
+  document.getElementById("retail_subscription").value = "";
+  document.getElementById("qib_subscription").value = "";
+  document.getElementById("nii_subscription").value = "";
+  document.getElementById("total_subscription").value = "";
+}
+
+function badgeClass(status) {
+  if (status === "Open") return "badge badge-open";
+  if (status === "Closed") return "badge badge-closed";
+  return "badge badge-upcoming";
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -159,6 +268,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (data.session) {
     document.getElementById("loginBox").style.display = "none";
     document.getElementById("adminBox").style.display = "grid";
+    document.getElementById("liveBox").style.display = "grid";
     loadAdminIPOs();
   }
 });
