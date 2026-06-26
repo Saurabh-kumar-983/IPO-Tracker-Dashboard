@@ -3,26 +3,47 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>IPO Tracker India</title>
+  <title>IPO Tracker Dashboard</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <h1>IPO Tracker India</h1>
-
-  <div class="tabs">
-    <button onclick="loadIPOs('Upcoming')">Upcoming</button>
-    <button onclick="loadIPOs('Open')">Open</button>
-    <button onclick="loadIPOs('Closed')">Closed</button>
-    <button onclick="loadIPOs()">All IPOs</button>
+<header class="hero">
+  <div class="hero-content">
+    <p class="tag">India IPO Intelligence Platform</p>
+    <h1>IPO Tracker Dashboard</h1>
+    <p>Track upcoming, open, closed IPOs, allotment links, price bands and important dates in one clean place.</p>
   </div>
+</header>
 
-  <div id="ipoList">
-    <p>Loading IPO data...</p>
-  </div>
+<section class="stats">
+  <div class="stat-card"><span>Total IPOs</span><h2 id="totalCount">0</h2></div>
+  <div class="stat-card"><span>Upcoming</span><h2 id="upcomingCount">0</h2></div>
+  <div class="stat-card"><span>Open Now</span><h2 id="openCount">0</h2></div>
+  <div class="stat-card"><span>Closed</span><h2 id="closedCount">0</h2></div>
+</section>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="app.js"></script>
+<section class="controls">
+  <input type="text" id="searchInput" placeholder="Search IPO by company or symbol..." onkeyup="applyFilters()" />
+
+  <select id="statusFilter" onchange="applyFilters()">
+    <option value="">All IPOs</option>
+    <option value="Upcoming">Upcoming</option>
+    <option value="Open">Open</option>
+    <option value="Closed">Closed</option>
+  </select>
+</section>
+
+<section class="investor-note">
+  <b>Investor Note:</b> Always verify IPO details from official sources like NSE, BSE, SEBI, RHP and registrar websites before applying.
+</section>
+
+<main id="ipoList">
+  <p class="empty">Loading IPO data...</p>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="app.js"></script>
 
 </body>
 </html>
