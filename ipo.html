@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IPO Detail</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">📊</div>
+    <div>
+      <h2>IPO Detail</h2>
+      <p>Complete IPO information</p>
+    </div>
+  </div>
+  <a href="index.html" class="download">Back to Dashboard</a>
+</header>
+
+<section class="detail-wrapper">
+  <div id="ipoDetail" class="detail-card">
+    Loading IPO detail...
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL = "https://iizpmjortvijdwyydtec.supabase.co";
+
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpenBtam9ydHZpamR3eXlkdGVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyOTEwMTcsImV4cCI6MjA5Nzg2NzAxN30.41CO6OSasC1b6m6uoNzURgNQGymOciABNpr1-FVO-8w";
+
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+function safe(v) {
+  return v || "-";
+}
+
+async function loadIPODetail() {
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get("id");
+
+  if (!id) {
+    document.getElementById("ipoDetail").innerHTML = "IPO ID missing.";
+    return;
+  }
+
+  const { data, error } = await supabaseClient
+    .from("ipos")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  if (error) {
+    document.getElementById("ipoDetail").innerHTML = error.message;
+    return;
+  }
+
+  document.title = `${data.company_name} | IPO Detail`;
+
+  document.getElementById("ipoDetail").innerHTML = `
+    <div class="detail-header">
+      <div>
+        <h1>${safe(data.company_name)}</h1>
+        <p>${safe(data.symbol)} · ${safe(data.exchange)} · ${safe(data.ipo_type)}</p>
+      </div>
+      <span class="badge badge-upcoming">${safe(data.status)}</span>
+    </div>
+
+    <div class="detail-grid">
+      <div><b>Price Band</b><span>${safe(data.price_band)}</span></div>
+      <div><b>Lot Size</b><span>${safe(data.lot_size)}</span></div>
+      <div><b>Issue Size</b><span>${safe(data.issue_size)}</span></div>
+      <div><b>Registrar</b><span>${safe(data.registrar)}</span></div>
+    </div>
+
+    <h2>Important Dates</h2>
+    <div class="detail-grid">
+      <div><b>Open Date</b><span>${safe(data.open_date)}</span></div>
+      <div><b>Close Date</b><span>${safe(data.close_date)}</span></div>
+      <div><b>Allotment Date</b><span>${safe(data.allotment_date)}</span></div>
+      <div><b>Refund Date</b><span>${safe(data.refund_date)}</span></div>
+      <div><b>Listing Date</b><span>${safe(data.listing_date)}</span></div>
+    </div>
+
+    <h2>Remarks</h2>
+    <p class="detail-remarks">${data.remarks || "No remarks added."}</p>
+
+    <div class="links">
+      ${data.rhp_url ? `<a class="secondary" href="${data.rhp_url}" target="_blank">View RHP</a>` : ""}
+      ${data.registrar_url ? `<a href="${data.registrar_url}" target="_blank">Check Allotment</a>` : ""}
+    </div>
+  `;
+}
+
+document.addEventListener("DOMContentLoaded", loadIPODetail);
+</script>
+
+</body>
+</html>
