@@ -8,15 +8,25 @@ let allIPOs = [];
 
 async function fetchAllIPOs() {
   const tableBody = document.getElementById("ipoTableBody");
-  tableBody.innerHTML = `<tr><td colspan="11">Loading IPO data...</td></tr>`;
+  tableBody.innerHTML = `<tr><td colspan="13">Loading IPO data...</td></tr>`;
 
   const { data, error } = await supabaseClient
     .from("ipos")
-    .select("*")
+    .select(`
+      *,
+      ipo_live_updates (
+        gmp,
+        retail_subscription,
+        qib_subscription,
+        nii_subscription,
+        total_subscription,
+        last_updated
+      )
+    `)
     .order("open_date", { ascending: true });
 
   if (error) {
-    tableBody.innerHTML = `<tr><td colspan="11">Error: ${error.message}</td></tr>`;
+    tableBody.innerHTML = `<tr><td colspan="13">Error: ${error.message}</td></tr>`;
     return;
   }
 
@@ -100,54 +110,72 @@ function safe(v) {
   return v || "-";
 }
 
+function getLive(ipo) {
+  return ipo.ipo_live_updates && ipo.ipo_live_updates.length
+    ? ipo.ipo_live_updates[0]
+    : {};
+}
+
 function renderTable(data) {
   const tbody = document.getElementById("ipoTableBody");
   document.getElementById("recordCount").innerText = `${data.length} records`;
 
   if (!data.length) {
-    tbody.innerHTML = `<tr><td colspan="11">No IPO data found.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="13">No IPO data found.</td></tr>`;
     return;
   }
 
-  tbody.innerHTML = data.map(ipo => `
-    <tr>
-      <td>
-        <a class="company" href="ipo.html?id=${ipo.id}">${safe(ipo.company_name)}</a>
-        <span class="sub">${safe(ipo.symbol)} · ${safe(ipo.exchange)}</span>
-      </td>
-      <td><span class="type">${safe(ipo.ipo_type)}</span></td>
-      <td>${safe(ipo.price_band)}</td>
-      <td>${safe(ipo.issue_size)}</td>
-      <td>${safe(ipo.lot_size)}</td>
-      <td>${safe(ipo.open_date)}</td>
-      <td>${safe(ipo.close_date)}</td>
-      <td>${safe(ipo.allotment_date)}</td>
-      <td>${safe(ipo.listing_date)}</td>
-      <td><span class="${badgeClass(ipo.status)}">${safe(ipo.status)}</span></td>
-      <td class="actions">
-        ${ipo.rhp_url ? `<a href="${ipo.rhp_url}" target="_blank">RHP</a>` : ""}
-        ${ipo.registrar_url ? `<a class="blue" href="${ipo.registrar_url}" target="_blank">Allotment</a>` : ""}
-      </td>
-    </tr>
-  `).join("");
+  tbody.innerHTML = data.map(ipo => {
+    const live = getLive(ipo);
+
+    return `
+      <tr>
+        <td>
+          <a class="company" href="ipo.html?id=${ipo.id}">${safe(ipo.company_name)}</a>
+          <span class="sub">${safe(ipo.symbol)} · ${safe(ipo.exchange)}</span>
+        </td>
+        <td><span class="type">${safe(ipo.ipo_type)}</span></td>
+        <td>${safe(ipo.price_band)}</td>
+        <td>${safe(ipo.issue_size)}</td>
+        <td>${safe(ipo.lot_size)}</td>
+        <td>${live.gmp || "-"}</td>
+        <td>${live.total_subscription || "-"}</td>
+        <td>${safe(ipo.open_date)}</td>
+        <td>${safe(ipo.close_date)}</td>
+        <td>${safe(ipo.allotment_date)}</td>
+        <td>${safe(ipo.listing_date)}</td>
+        <td><span class="${badgeClass(ipo.status)}">${safe(ipo.status)}</span></td>
+        <td class="actions">
+          ${ipo.rhp_url ? `<a href="${ipo.rhp_url}" target="_blank">RHP</a>` : ""}
+          ${ipo.registrar_url ? `<a class="blue" href="${ipo.registrar_url}" target="_blank">Allotment</a>` : ""}
+        </td>
+      </tr>
+    `;
+  }).join("");
 }
 
 function downloadCSV() {
   const rows = [
-    ["Company", "Symbol", "Type", "Price Band", "Issue Size", "Lot Size", "Open", "Close", "Allotment", "Listing", "Status"],
-    ...allIPOs.map(ipo => [
-      safe(ipo.company_name),
-      safe(ipo.symbol),
-      safe(ipo.ipo_type),
-      safe(ipo.price_band),
-      safe(ipo.issue_size),
-      safe(ipo.lot_size),
-      safe(ipo.open_date),
-      safe(ipo.close_date),
-      safe(ipo.allotment_date),
-      safe(ipo.listing_date),
-      safe(ipo.status)
-    ])
+    ["Company", "Symbol", "Type", "Price Band", "Issue Size", "Lot Size", "GMP", "Total Subscription", "Open", "Close", "Allotment", "Listing", "Status"],
+    ...allIPOs.map(ipo => {
+      const live = getLive(ipo);
+
+      return [
+        safe(ipo.company_name),
+        safe(ipo.symbol),
+        safe(ipo.ipo_type),
+        safe(ipo.price_band),
+        safe(ipo.issue_size),
+        safe(ipo.lot_size),
+        live.gmp || "-",
+        live.total_subscription || "-",
+        safe(ipo.open_date),
+        safe(ipo.close_date),
+        safe(ipo.allotment_date),
+        safe(ipo.listing_date),
+        safe(ipo.status)
+      ];
+    })
   ];
 
   const csv = rows.map(row =>
