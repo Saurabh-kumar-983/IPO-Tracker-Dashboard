@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>IPO Admin Panel</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">🔐</div>
+    <div>
+      <h2>IPO Admin Panel</h2>
+      <p>Manage IPO records</p>
+    </div>
+  </div>
+  <a href="index.html" class="download">Back to Dashboard</a>
+</header>
+
+<section class="filter-panel" id="loginBox">
+  <input id="email" placeholder="Admin Email">
+  <input id="password" type="password" placeholder="Password">
+  <button onclick="loginAdmin()">Login</button>
+</section>
+
+<section class="filter-panel" id="adminBox" style="display:none;">
+  <input id="company_name" placeholder="Company Name">
+  <input id="symbol" placeholder="Symbol">
+  <input id="ipo_type" placeholder="IPO Type">
+  <input id="exchange" placeholder="Exchange">
+  <input id="price_band" placeholder="Price Band">
+  <input id="lot_size" placeholder="Lot Size">
+  <input id="issue_size" placeholder="Issue Size">
+  <input id="open_date" type="date">
+  <input id="close_date" type="date">
+  <input id="allotment_date" type="date">
+  <input id="refund_date" type="date">
+  <input id="listing_date" type="date">
+
+  <select id="status">
+    <option value="Upcoming">Upcoming</option>
+    <option value="Open">Open</option>
+    <option value="Closed">Closed</option>
+  </select>
+
+  <input id="registrar" placeholder="Registrar">
+  <input id="rhp_url" placeholder="RHP URL">
+  <input id="registrar_url" placeholder="Registrar URL">
+  <input id="remarks" placeholder="Remarks">
+
+  <button onclick="saveIPO()">Save IPO</button>
+  <button onclick="logoutAdmin()">Logout</button>
+</section>
+
+<section class="table-card">
+  <div class="table-head">
+    <h2>IPO Records</h2>
+    <p id="adminCount">0 records</p>
+  </div>
+
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>Company</th>
+          <th>Symbol</th>
+          <th>Status</th>
+          <th>Open</th>
+          <th>Close</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="adminTable">
+        <tr><td colspan="6">Login to manage records</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="admin.js"></script>
+
+</body>
+</html>
