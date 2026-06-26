@@ -6,6 +6,7 @@
   <title>IPO Tracker Dashboard</title>
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
 
 <header class="topbar">
@@ -17,14 +18,14 @@
     </div>
   </div>
 
- <nav>
-  <a class="active" onclick="showSection('Dashboard')">Dashboard</a>
-  <a onclick="quickFilter('Open')">Current IPOs</a>
-  <a onclick="quickFilter('Upcoming')">Upcoming IPOs</a>
-  <a onclick="quickFilter('Closed')">Past IPOs</a>
-  <a onclick="alert('GMP section coming soon')">GMP</a>
-  <a onclick="alert('News section coming soon')">News</a>
-</nav>
+  <nav>
+    <a class="active" onclick="showSection('Dashboard')">Dashboard</a>
+    <a onclick="showSection('Current IPOs')">Current IPOs</a>
+    <a onclick="showSection('Upcoming IPOs')">Upcoming IPOs</a>
+    <a onclick="showSection('Past IPOs')">Past IPOs</a>
+    <a onclick="showSection('GMP')">GMP</a>
+    <a onclick="showSection('News')">News</a>
+  </nav>
 
   <button class="download" onclick="downloadCSV()">Download CSV</button>
 </header>
@@ -77,6 +78,8 @@
           <th>Price Band</th>
           <th>Issue Size</th>
           <th>Lot</th>
+          <th>GMP</th>
+          <th>Total Sub.</th>
           <th>Open</th>
           <th>Close</th>
           <th>Allotment</th>
@@ -85,8 +88,11 @@
           <th>Actions</th>
         </tr>
       </thead>
+
       <tbody id="ipoTableBody">
-        <tr><td colspan="11">Loading IPO data...</td></tr>
+        <tr>
+          <td colspan="13">Loading IPO data...</td>
+        </tr>
       </tbody>
     </table>
   </div>
@@ -94,5 +100,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="app.js"></script>
+
 </body>
 </html>
