@@ -17,14 +17,14 @@
     </div>
   </div>
 
-  <nav>
-    <a class="active">Dashboard</a>
-    <a>Current IPOs</a>
-    <a>Upcoming IPOs</a>
-    <a>Past IPOs</a>
-    <a>GMP</a>
-    <a>News</a>
-  </nav>
+ <nav>
+  <a class="active" onclick="showSection('Dashboard')">Dashboard</a>
+  <a onclick="quickFilter('Open')">Current IPOs</a>
+  <a onclick="quickFilter('Upcoming')">Upcoming IPOs</a>
+  <a onclick="quickFilter('Closed')">Past IPOs</a>
+  <a onclick="alert('GMP section coming soon')">GMP</a>
+  <a onclick="alert('News section coming soon')">News</a>
+</nav>
 
   <button class="download" onclick="downloadCSV()">Download CSV</button>
 </header>
