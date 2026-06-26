@@ -13,7 +13,7 @@
     <div class="logo">📊</div>
     <div>
       <h2>IPO Detail</h2>
-      <p>Complete IPO information</p>
+      <p>Complete IPO information with live updates</p>
     </div>
   </div>
   <a href="index.html" class="download">Back to Dashboard</a>
@@ -38,6 +38,17 @@ function safe(v) {
   return v || "-";
 }
 
+function badgeClass(status) {
+  if (status === "Open") return "badge badge-open";
+  if (status === "Closed") return "badge badge-closed";
+  return "badge badge-upcoming";
+}
+
+function formatDateTime(v) {
+  if (!v) return "-";
+  return new Date(v).toLocaleString("en-IN");
+}
+
 async function loadIPODetail() {
   const params = new URLSearchParams(window.location.search);
   const id = params.get("id");
@@ -49,7 +60,17 @@ async function loadIPODetail() {
 
   const { data, error } = await supabaseClient
     .from("ipos")
-    .select("*")
+    .select(`
+      *,
+      ipo_live_updates (
+        gmp,
+        retail_subscription,
+        qib_subscription,
+        nii_subscription,
+        total_subscription,
+        last_updated
+      )
+    `)
     .eq("id", id)
     .single();
 
@@ -57,6 +78,10 @@ async function loadIPODetail() {
     document.getElementById("ipoDetail").innerHTML = error.message;
     return;
   }
+
+  const live = data.ipo_live_updates && data.ipo_live_updates.length
+    ? data.ipo_live_updates[0]
+    : {};
 
   document.title = `${data.company_name} | IPO Detail`;
 
@@ -66,9 +91,20 @@ async function loadIPODetail() {
         <h1>${safe(data.company_name)}</h1>
         <p>${safe(data.symbol)} · ${safe(data.exchange)} · ${safe(data.ipo_type)}</p>
       </div>
-      <span class="badge badge-upcoming">${safe(data.status)}</span>
+      <span class="${badgeClass(data.status)}">${safe(data.status)}</span>
     </div>
 
+    <h2>Live Market Update</h2>
+    <div class="detail-grid">
+      <div><b>GMP</b><span>${safe(live.gmp)}</span></div>
+      <div><b>Retail</b><span>${safe(live.retail_subscription)}</span></div>
+      <div><b>QIB</b><span>${safe(live.qib_subscription)}</span></div>
+      <div><b>NII/HNI</b><span>${safe(live.nii_subscription)}</span></div>
+      <div><b>Total Subscription</b><span>${safe(live.total_subscription)}</span></div>
+      <div><b>Last Updated</b><span>${formatDateTime(live.last_updated)}</span></div>
+    </div>
+
+    <h2>Issue Details</h2>
     <div class="detail-grid">
       <div><b>Price Band</b><span>${safe(data.price_band)}</span></div>
       <div><b>Lot Size</b><span>${safe(data.lot_size)}</span></div>
