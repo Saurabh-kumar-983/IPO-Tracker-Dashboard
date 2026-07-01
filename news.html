@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IPO News</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">📰</div>
+    <div>
+      <h2>IPO News</h2>
+      <p>Latest IPO updates and market notes</p>
+    </div>
+  </div>
+
+  <nav>
+    <a href="index.html">Dashboard</a>
+    <a href="gmp.html">GMP</a>
+    <a class="active" href="news.html">News</a>
+  </nav>
+</header>
+
+<section class="gmp-control-card">
+  <div>
+    <h2>IPO News Board</h2>
+    <p>Track important IPO updates, allotment news, listing alerts and market notes.</p>
+  </div>
+  <div class="live-pill">● NEWS FEED</div>
+</section>
+
+<section class="quick-filters">
+  <button onclick="filterNews('')">All</button>
+  <button onclick="filterNews('IPO')">IPO</button>
+  <button onclick="filterNews('Allotment')">Allotment</button>
+  <button onclick="filterNews('Listing')">Listing</button>
+  <button onclick="filterNews('GMP')">GMP</button>
+</section>
+
+<section class="table-card">
+  <div class="table-head">
+    <h2>Latest IPO News</h2>
+    <p id="newsCount">0 records</p>
+  </div>
+
+  <div id="newsList" class="news-grid">
+    Loading news...
+  </div>
+</section>
+
+<script src="news.js"></script>
+
+</body>
+</html>
