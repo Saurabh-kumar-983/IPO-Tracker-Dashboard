@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>IPO GMP Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">🔥</div>
+    <div>
+      <h2>GMP Dashboard</h2>
+      <p>Grey Market Premium Tracker</p>
+    </div>
+  </div>
+
+  <nav>
+    <a href="index.html">Dashboard</a>
+    <a class="active">GMP</a>
+  </nav>
+</header>
+
+<section class="kpi-wrap">
+  <div class="kpi"><span>🔥</span><p>Active GMP IPOs</p><h2 id="activeCount">0</h2></div>
+  <div class="kpi"><span>📈</span><p>Highest GMP</p><h2 id="highestGMP">₹0</h2></div>
+  <div class="kpi"><span>💹</span><p>Avg GMP</p><h2 id="avgGMP">₹0</h2></div>
+  <div class="kpi"><span>📊</span><p>Total IPOs</p><h2 id="totalIPO">0</h2></div>
+</section>
+
+<section class="table-card">
+  <div class="table-head">
+    <h2>Live GMP Market</h2>
+  </div>
+
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>Company</th>
+          <th>GMP</th>
+          <th>Total Subscription</th>
+          <th>Type</th>
+          <th>Open</th>
+          <th>Close</th>
+        </tr>
+      </thead>
+      <tbody id="gmpTableBody">
+        <tr><td colspan="6">Loading GMP...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="gmp.js"></script>
+</body>
+</html>
