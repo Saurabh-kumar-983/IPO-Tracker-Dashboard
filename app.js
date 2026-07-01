@@ -77,6 +77,17 @@ function resetFilters() {
 }
 
 function showSection(sectionName) {
+  document.querySelectorAll("nav a").forEach(link => {
+    link.classList.remove("active");
+  });
+
+  const navLinks = document.querySelectorAll("nav a");
+  navLinks.forEach(link => {
+    if (link.innerText.trim() === sectionName) {
+      link.classList.add("active");
+    }
+  });
+
   if (sectionName === "Dashboard") {
     resetFilters();
     return;
@@ -97,7 +108,15 @@ function showSection(sectionName) {
     return;
   }
 
-  alert(sectionName + " section coming soon.");
+  if (sectionName === "GMP") {
+    alert("GMP Dashboard coming in Phase 4A.");
+    return;
+  }
+
+  if (sectionName === "News") {
+    alert("IPO News section coming in Phase 4B.");
+    return;
+  }
 }
 
 function badgeClass(status) {
