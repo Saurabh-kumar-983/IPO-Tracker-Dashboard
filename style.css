@@ -285,9 +285,6 @@ table{
 thead{
   background:linear-gradient(90deg,#0b5be7,#174cc7);
   color:#fff;
-  position:sticky;
-  top:78px;
-  z-index:2;
 }
 
 th,td{
