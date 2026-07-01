@@ -32,17 +32,67 @@ async function fetchAllIPOs() {
 
   allIPOs = data || [];
   updateStats(allIPOs);
+  renderWidgets(allIPOs);
   renderTable(allIPOs);
 }
 
 function updateStats(data) {
   document.getElementById("totalCount").innerText = data.length;
-  document.getElementById("upcomingCount").innerText =
-    data.filter(x => x.status === "Upcoming").length;
-  document.getElementById("openCount").innerText =
-    data.filter(x => x.status === "Open").length;
-  document.getElementById("closedCount").innerText =
-    data.filter(x => x.status === "Closed").length;
+  document.getElementById("upcomingCount").innerText = data.filter(x => x.status === "Upcoming").length;
+  document.getElementById("openCount").innerText = data.filter(x => x.status === "Open").length;
+  document.getElementById("closedCount").innerText = data.filter(x => x.status === "Closed").length;
+}
+
+function renderWidgets(data) {
+  renderGMPWidget(data);
+  renderClosingWidget(data);
+  renderListingWidget(data);
+  renderCalendarWidget(data);
+}
+
+function renderGMPWidget(data) {
+  const container = document.getElementById("gmpWidget");
+  if (!container) return;
+
+  container.innerHTML = data.slice(0, 5).map(ipo => {
+    const live = getLive(ipo);
+    return `
+      <div>
+        <strong>${safe(ipo.company_name)}</strong><br>
+        GMP: <span class="green">${live.gmp || "-"}</span>
+      </div>
+    `;
+  }).join("");
+}
+
+function renderClosingWidget(data) {
+  const container = document.getElementById("closingWidget");
+  if (!container) return;
+
+  const today = new Date().toISOString().split("T")[0];
+  const count = data.filter(x => x.close_date === today).length;
+  container.innerHTML = `<div class="widget-big-number">${count}</div>`;
+}
+
+function renderListingWidget(data) {
+  const container = document.getElementById("listingWidget");
+  if (!container) return;
+
+  const today = new Date().toISOString().split("T")[0];
+  const count = data.filter(x => x.listing_date === today).length;
+  container.innerHTML = `<div class="widget-big-number">${count}</div>`;
+}
+
+function renderCalendarWidget(data) {
+  const container = document.getElementById("calendarWidget");
+  if (!container) return;
+
+  container.innerHTML = data.slice(0, 5).map(ipo => `
+    <div>
+      <strong>${safe(ipo.company_name)}</strong><br>
+      Open: ${safe(ipo.open_date)} | Close: ${safe(ipo.close_date)}
+    </div>
+  `).join("");
 }
 
 function applyFilters() {
@@ -75,141 +125,3 @@ function resetFilters() {
   document.getElementById("typeFilter").value = "";
   renderTable(allIPOs);
 }
-
-function showSection(sectionName) {
-  document.querySelectorAll("nav a").forEach(link => {
-    link.classList.remove("active");
-  });
-
-  const navLinks = document.querySelectorAll("nav a");
-  navLinks.forEach(link => {
-    if (link.innerText.trim() === sectionName) {
-      link.classList.add("active");
-    }
-  });
-
-  if (sectionName === "Dashboard") {
-    resetFilters();
-    return;
-  }
-
-  if (sectionName === "Current IPOs") {
-    quickFilter("Open");
-    return;
-  }
-
-  if (sectionName === "Upcoming IPOs") {
-    quickFilter("Upcoming");
-    return;
-  }
-
-  if (sectionName === "Past IPOs") {
-    quickFilter("Closed");
-    return;
-  }
-
-  if (sectionName === "GMP") {
-    alert("GMP Dashboard coming in Phase 4A.");
-    return;
-  }
-
-  if (sectionName === "News") {
-    alert("IPO News section coming in Phase 4B.");
-    return;
-  }
-}
-
-function badgeClass(status) {
-  if (status === "Open") return "badge badge-open";
-  if (status === "Closed") return "badge badge-closed";
-  return "badge badge-upcoming";
-}
-
-function safe(v) {
-  return v || "-";
-}
-
-function getLive(ipo) {
-  return ipo.ipo_live_updates && ipo.ipo_live_updates.length
-    ? ipo.ipo_live_updates[0]
-    : {};
-}
-
-function renderTable(data) {
-  const tbody = document.getElementById("ipoTableBody");
-  document.getElementById("recordCount").innerText = `${data.length} records`;
-
-  if (!data.length) {
-    tbody.innerHTML = `<tr><td colspan="13">No IPO data found.</td></tr>`;
-    return;
-  }
-
-  tbody.innerHTML = data.map(ipo => {
-    const live = getLive(ipo);
-
-    return `
-      <tr>
-        <td>
-          <a class="company" href="ipo.html?id=${ipo.id}">${safe(ipo.company_name)}</a>
-          <span class="sub">${safe(ipo.symbol)} · ${safe(ipo.exchange)}</span>
-        </td>
-        <td><span class="type">${safe(ipo.ipo_type)}</span></td>
-        <td>${safe(ipo.price_band)}</td>
-        <td>${safe(ipo.issue_size)}</td>
-        <td>${safe(ipo.lot_size)}</td>
-        <td>${live.gmp || "-"}</td>
-        <td>${live.total_subscription || "-"}</td>
-        <td>${safe(ipo.open_date)}</td>
-        <td>${safe(ipo.close_date)}</td>
-        <td>${safe(ipo.allotment_date)}</td>
-        <td>${safe(ipo.listing_date)}</td>
-        <td><span class="${badgeClass(ipo.status)}">${safe(ipo.status)}</span></td>
-        <td class="actions">
-          ${ipo.rhp_url ? `<a href="${ipo.rhp_url}" target="_blank">RHP</a>` : ""}
-          ${ipo.registrar_url ? `<a class="blue" href="${ipo.registrar_url}" target="_blank">Allotment</a>` : ""}
-        </td>
-      </tr>
-    `;
-  }).join("");
-}
-
-function downloadCSV() {
-  const rows = [
-    ["Company", "Symbol", "Type", "Price Band", "Issue Size", "Lot Size", "GMP", "Total Subscription", "Open", "Close", "Allotment", "Listing", "Status"],
-    ...allIPOs.map(ipo => {
-      const live = getLive(ipo);
-
-      return [
-        safe(ipo.company_name),
-        safe(ipo.symbol),
-        safe(ipo.ipo_type),
-        safe(ipo.price_band),
-        safe(ipo.issue_size),
-        safe(ipo.lot_size),
-        live.gmp || "-",
-        live.total_subscription || "-",
-        safe(ipo.open_date),
-        safe(ipo.close_date),
-        safe(ipo.allotment_date),
-        safe(ipo.listing_date),
-        safe(ipo.status)
-      ];
-    })
-  ];
-
-  const csv = rows.map(row =>
-    row.map(value => `"${String(value).replace(/"/g, '""')}"`).join(",")
-  ).join("\n");
-
-  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-  const url = URL.createObjectURL(blob);
-
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "ipo-tracker.csv";
-  a.click();
-
-  URL.revokeObjectURL(url);
-}
-
-document.addEventListener("DOMContentLoaded", fetchAllIPOs);
