@@ -557,3 +557,40 @@ tbody tr:hover{
     grid-template-columns: 1fr;
   }
 }
+.score-hot {
+  color: #16a34a;
+  font-weight: 900;
+}
+
+.score-mid {
+  color: #d97706;
+  font-weight: 900;
+}
+
+.score-low {
+  color: #dc2626;
+  font-weight: 900;
+}
+
+.signal-pill {
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-weight: 900;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.signal-hot {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.signal-mid {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.signal-low {
+  background: #fee2e2;
+  color: #991b1b;
+}
