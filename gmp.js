@@ -35,6 +35,23 @@ async function loadGMP() {
   renderGMPTable(allGMPData);
 }
 
+function getAutoStatus(ipo) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const openDate = ipo.open_date ? new Date(ipo.open_date) : null;
+  const closeDate = ipo.close_date ? new Date(ipo.close_date) : null;
+
+  if (openDate) openDate.setHours(0, 0, 0, 0);
+  if (closeDate) closeDate.setHours(0, 0, 0, 0);
+
+  if (openDate && today < openDate) return "Upcoming";
+  if (openDate && closeDate && today >= openDate && today <= closeDate) return "Open";
+  if (closeDate && today > closeDate) return "Closed";
+
+  return ipo.status || "Upcoming";
+}
+
 function getLive(ipo) {
   return ipo.ipo_live_updates && ipo.ipo_live_updates.length
     ? ipo.ipo_live_updates[0]
@@ -108,8 +125,8 @@ function filterGMP(filterValue) {
     filtered = allGMPData.filter(ipo => ipo.ipo_type === filterValue);
   }
 
-  if (filterValue === "Open" || filterValue === "Upcoming") {
-    filtered = allGMPData.filter(ipo => ipo.status === filterValue);
+  if (filterValue === "Open" || filterValue === "Upcoming" || filterValue === "Closed") {
+    filtered = allGMPData.filter(ipo => getAutoStatus(ipo) === filterValue);
   }
 
   renderGMPTable(filtered);
@@ -140,6 +157,7 @@ function renderGMPTable(data) {
 
   tbody.innerHTML = data.map(ipo => {
     const live = getLive(ipo);
+    const autoStatus = getAutoStatus(ipo);
 
     return `
       <tr>
@@ -151,7 +169,7 @@ function renderGMPTable(data) {
         <td>${estimateGain(live.gmp, ipo.price_band)}</td>
         <td>${safe(live.total_subscription)}</td>
         <td><span class="type">${safe(ipo.ipo_type)}</span></td>
-        <td><span class="${badgeClass(ipo.status)}">${safe(ipo.status)}</span></td>
+        <td><span class="${badgeClass(autoStatus)}">${autoStatus}</span></td>
         <td>${safe(ipo.open_date)}</td>
         <td>${safe(ipo.close_date)}</td>
         <td>${formatDateTime(live.last_updated)}</td>
