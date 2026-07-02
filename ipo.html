@@ -38,6 +38,23 @@ function safe(v) {
   return v || "-";
 }
 
+function getAutoStatus(ipo) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const openDate = ipo.open_date ? new Date(ipo.open_date) : null;
+  const closeDate = ipo.close_date ? new Date(ipo.close_date) : null;
+
+  if (openDate) openDate.setHours(0, 0, 0, 0);
+  if (closeDate) closeDate.setHours(0, 0, 0, 0);
+
+  if (openDate && today < openDate) return "Upcoming";
+  if (openDate && closeDate && today >= openDate && today <= closeDate) return "Open";
+  if (closeDate && today > closeDate) return "Closed";
+
+  return ipo.status || "Upcoming";
+}
+
 function badgeClass(status) {
   if (status === "Open") return "badge badge-open";
   if (status === "Closed") return "badge badge-closed";
@@ -83,6 +100,8 @@ async function loadIPODetail() {
     ? data.ipo_live_updates[0]
     : {};
 
+  const autoStatus = getAutoStatus(data);
+
   document.title = `${data.company_name} | IPO Detail`;
 
   document.getElementById("ipoDetail").innerHTML = `
@@ -91,7 +110,7 @@ async function loadIPODetail() {
         <h1>${safe(data.company_name)}</h1>
         <p>${safe(data.symbol)} · ${safe(data.exchange)} · ${safe(data.ipo_type)}</p>
       </div>
-      <span class="${badgeClass(data.status)}">${safe(data.status)}</span>
+      <span class="${badgeClass(autoStatus)}">${autoStatus}</span>
     </div>
 
     <h2>Live Market Update</h2>
