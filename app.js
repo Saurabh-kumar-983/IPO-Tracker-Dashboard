@@ -36,11 +36,31 @@ async function fetchAllIPOs() {
   renderTable(allIPOs);
 }
 
+function getAutoStatus(ipo) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const openDate = ipo.open_date ? new Date(ipo.open_date) : null;
+  const closeDate = ipo.close_date ? new Date(ipo.close_date) : null;
+
+  if (openDate) openDate.setHours(0, 0, 0, 0);
+  if (closeDate) closeDate.setHours(0, 0, 0, 0);
+
+  if (openDate && today < openDate) return "Upcoming";
+  if (openDate && closeDate && today >= openDate && today <= closeDate) return "Open";
+  if (closeDate && today > closeDate) return "Closed";
+
+  return ipo.status || "Upcoming";
+}
+
 function updateStats(data) {
   document.getElementById("totalCount").innerText = data.length;
-  document.getElementById("upcomingCount").innerText = data.filter(x => x.status === "Upcoming").length;
-  document.getElementById("openCount").innerText = data.filter(x => x.status === "Open").length;
-  document.getElementById("closedCount").innerText = data.filter(x => x.status === "Closed").length;
+  document.getElementById("upcomingCount").innerText =
+    data.filter(x => getAutoStatus(x) === "Upcoming").length;
+  document.getElementById("openCount").innerText =
+    data.filter(x => getAutoStatus(x) === "Open").length;
+  document.getElementById("closedCount").innerText =
+    data.filter(x => getAutoStatus(x) === "Closed").length;
 }
 
 function renderWidgets(data) {
@@ -106,7 +126,7 @@ function applyFilters() {
 
     return (
       (name.includes(search) || symbol.includes(search)) &&
-      (status === "" || ipo.status === status) &&
+      (status === "" || getAutoStatus(ipo) === status) &&
       (type === "" || ipo.ipo_type === type)
     );
   });
@@ -125,13 +145,13 @@ function resetFilters() {
   document.getElementById("typeFilter").value = "";
   renderTable(allIPOs);
 }
+
 function showSection(sectionName) {
   document.querySelectorAll("nav a").forEach(link => {
     link.classList.remove("active");
   });
 
-  const navLinks = document.querySelectorAll("nav a");
-  navLinks.forEach(link => {
+  document.querySelectorAll("nav a").forEach(link => {
     if (link.innerText.trim() === sectionName) {
       link.classList.add("active");
     }
@@ -158,12 +178,12 @@ function showSection(sectionName) {
   }
 
   if (sectionName === "GMP") {
-    alert("GMP Dashboard coming in Phase 4B.");
+    window.location.href = "gmp.html";
     return;
   }
 
   if (sectionName === "News") {
-    alert("IPO News section coming in Phase 4C.");
+    window.location.href = "news.html";
     return;
   }
 }
@@ -195,6 +215,7 @@ function renderTable(data) {
 
   tbody.innerHTML = data.map(ipo => {
     const live = getLive(ipo);
+    const autoStatus = getAutoStatus(ipo);
 
     return `
       <tr>
@@ -212,7 +233,7 @@ function renderTable(data) {
         <td>${safe(ipo.close_date)}</td>
         <td>${safe(ipo.allotment_date)}</td>
         <td>${safe(ipo.listing_date)}</td>
-        <td><span class="${badgeClass(ipo.status)}">${safe(ipo.status)}</span></td>
+        <td><span class="${badgeClass(autoStatus)}">${autoStatus}</span></td>
         <td class="actions">
           ${ipo.rhp_url ? `<a href="${ipo.rhp_url}" target="_blank">RHP</a>` : ""}
           ${ipo.registrar_url ? `<a class="blue" href="${ipo.registrar_url}" target="_blank">Allotment</a>` : ""}
@@ -227,6 +248,7 @@ function downloadCSV() {
     ["Company", "Symbol", "Type", "Price Band", "Issue Size", "Lot Size", "GMP", "Total Subscription", "Open", "Close", "Allotment", "Listing", "Status"],
     ...allIPOs.map(ipo => {
       const live = getLive(ipo);
+      const autoStatus = getAutoStatus(ipo);
 
       return [
         safe(ipo.company_name),
@@ -241,7 +263,7 @@ function downloadCSV() {
         safe(ipo.close_date),
         safe(ipo.allotment_date),
         safe(ipo.listing_date),
-        safe(ipo.status)
+        autoStatus
       ];
     })
   ];
