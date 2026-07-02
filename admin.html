@@ -13,7 +13,7 @@
     <div class="logo">🔐</div>
     <div>
       <h2>IPO Admin Panel</h2>
-      <p>Manage IPO records and live updates</p>
+      <p>Manage IPO records, live updates and news</p>
     </div>
   </div>
   <a href="index.html" class="download">Back to Dashboard</a>
@@ -69,6 +69,30 @@
   <button onclick="saveLiveUpdate()">Save Live Update</button>
 </section>
 
+<section class="filter-panel" id="newsBox" style="display:none;">
+  <input id="news_title" placeholder="News Title" />
+
+  <select id="news_category">
+    <option value="IPO">IPO</option>
+    <option value="GMP">GMP</option>
+    <option value="Allotment">Allotment</option>
+    <option value="Listing">Listing</option>
+  </select>
+
+  <input id="news_date" type="date" />
+  <input id="news_source" placeholder="Source" />
+  <input id="news_link" placeholder="News Link / Page Link" />
+  <input id="news_summary" placeholder="News Summary" />
+
+  <select id="news_active">
+    <option value="true">Active</option>
+    <option value="false">Inactive</option>
+  </select>
+
+  <button onclick="saveNews()">Save News</button>
+  <button onclick="clearNewsForm()">Clear News</button>
+</section>
+
 <section class="table-card">
   <div class="table-head">
     <h2>IPO Records</h2>
@@ -91,6 +115,31 @@
       </thead>
       <tbody id="adminTable">
         <tr><td colspan="8">Login to manage records</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="table-card">
+  <div class="table-head">
+    <h2>News Records</h2>
+    <p id="newsAdminCount">0 records</p>
+  </div>
+
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Category</th>
+          <th>Date</th>
+          <th>Source</th>
+          <th>Active</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="newsAdminTable">
+        <tr><td colspan="6">Login to manage news</td></tr>
       </tbody>
     </table>
   </div>
