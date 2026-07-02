@@ -5,31 +5,35 @@ const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let editingId = null;
+let editingNewsId = null;
 
 async function loginAdmin() {
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value;
 
-  const { error } = await supabaseClient.auth.signInWithPassword({
-    email,
-    password
-  });
+  const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
 
   if (error) {
     alert(error.message);
     return;
   }
 
-  document.getElementById("loginBox").style.display = "none";
-  document.getElementById("adminBox").style.display = "grid";
-  document.getElementById("liveBox").style.display = "grid";
-
-  loadAdminIPOs();
+  showAdminPanels();
 }
 
 async function logoutAdmin() {
   await supabaseClient.auth.signOut();
   location.reload();
+}
+
+function showAdminPanels() {
+  document.getElementById("loginBox").style.display = "none";
+  document.getElementById("adminBox").style.display = "grid";
+  document.getElementById("liveBox").style.display = "grid";
+  document.getElementById("newsBox").style.display = "grid";
+
+  loadAdminIPOs();
+  loadNewsAdmin();
 }
 
 async function saveIPO() {
@@ -58,13 +62,9 @@ async function saveIPO() {
     return;
   }
 
-  let result;
-
-  if (editingId) {
-    result = await supabaseClient.from("ipos").update(ipoData).eq("id", editingId);
-  } else {
-    result = await supabaseClient.from("ipos").insert([ipoData]);
-  }
+  const result = editingId
+    ? await supabaseClient.from("ipos").update(ipoData).eq("id", editingId)
+    : await supabaseClient.from("ipos").insert([ipoData]);
 
   if (result.error) {
     alert(result.error.message);
@@ -72,7 +72,6 @@ async function saveIPO() {
   }
 
   alert(editingId ? "IPO updated successfully" : "IPO added successfully");
-
   editingId = null;
   clearForm();
   loadAdminIPOs();
@@ -102,18 +101,9 @@ async function saveLiveUpdate() {
     .eq("ipo_id", Number(ipoId))
     .maybeSingle();
 
-  let result;
-
-  if (existing) {
-    result = await supabaseClient
-      .from("ipo_live_updates")
-      .update(liveData)
-      .eq("ipo_id", Number(ipoId));
-  } else {
-    result = await supabaseClient
-      .from("ipo_live_updates")
-      .insert([liveData]);
-  }
+  const result = existing
+    ? await supabaseClient.from("ipo_live_updates").update(liveData).eq("ipo_id", Number(ipoId))
+    : await supabaseClient.from("ipo_live_updates").insert([liveData]);
 
   if (result.error) {
     alert(result.error.message);
@@ -207,11 +197,7 @@ async function loadLiveForEdit(ipoId) {
 }
 
 async function editIPO(id) {
-  const { data, error } = await supabaseClient
-    .from("ipos")
-    .select("*")
-    .eq("id", id)
-    .single();
+  const { data, error } = await supabaseClient.from("ipos").select("*").eq("id", id).single();
 
   if (error) {
     alert(error.message);
@@ -241,6 +227,109 @@ async function deleteIPO(id) {
   loadAdminIPOs();
 }
 
+/* NEWS ADMIN */
+
+async function saveNews() {
+  const newsData = {
+    title: document.getElementById("news_title").value.trim(),
+    category: document.getElementById("news_category").value,
+    news_date: document.getElementById("news_date").value || null,
+    source: document.getElementById("news_source").value.trim(),
+    link: document.getElementById("news_link").value.trim(),
+    summary: document.getElementById("news_summary").value.trim(),
+    is_active: document.getElementById("news_active").value === "true"
+  };
+
+  if (!newsData.title) {
+    alert("News title is required.");
+    return;
+  }
+
+  const result = editingNewsId
+    ? await supabaseClient.from("ipo_news").update(newsData).eq("id", editingNewsId)
+    : await supabaseClient.from("ipo_news").insert([newsData]);
+
+  if (result.error) {
+    alert(result.error.message);
+    return;
+  }
+
+  alert(editingNewsId ? "News updated successfully" : "News added successfully");
+
+  editingNewsId = null;
+  clearNewsForm();
+  loadNewsAdmin();
+}
+
+async function loadNewsAdmin() {
+  const { data, error } = await supabaseClient
+    .from("ipo_news")
+    .select("*")
+    .order("news_date", { ascending: false });
+
+  if (error) {
+    document.getElementById("newsAdminTable").innerHTML =
+      `<tr><td colspan="6">${error.message}</td></tr>`;
+    return;
+  }
+
+  document.getElementById("newsAdminCount").innerText = `${data.length} records`;
+
+  document.getElementById("newsAdminTable").innerHTML = data.map(news => `
+    <tr>
+      <td>${news.title || "-"}</td>
+      <td>${news.category || "-"}</td>
+      <td>${news.news_date || "-"}</td>
+      <td>${news.source || "-"}</td>
+      <td>${news.is_active ? "Active" : "Inactive"}</td>
+      <td class="actions">
+        <a onclick="editNews(${news.id})">Edit</a>
+        <a class="blue" onclick="deleteNews(${news.id})">Delete</a>
+      </td>
+    </tr>
+  `).join("");
+}
+
+async function editNews(id) {
+  const { data, error } = await supabaseClient
+    .from("ipo_news")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  editingNewsId = id;
+
+  document.getElementById("news_title").value = data.title || "";
+  document.getElementById("news_category").value = data.category || "IPO";
+  document.getElementById("news_date").value = data.news_date || "";
+  document.getElementById("news_source").value = data.source || "";
+  document.getElementById("news_link").value = data.link || "";
+  document.getElementById("news_summary").value = data.summary || "";
+  document.getElementById("news_active").value = data.is_active ? "true" : "false";
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+async function deleteNews(id) {
+  if (!confirm("Delete this news record?")) return;
+
+  const { error } = await supabaseClient.from("ipo_news").delete().eq("id", id);
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  loadNewsAdmin();
+}
+
+/* CLEAR + SESSION */
+
 function clearForm() {
   document.querySelectorAll("#adminBox input").forEach(input => input.value = "");
   document.getElementById("status").value = "Upcoming";
@@ -256,6 +345,17 @@ function clearLiveForm() {
   document.getElementById("total_subscription").value = "";
 }
 
+function clearNewsForm() {
+  document.getElementById("news_title").value = "";
+  document.getElementById("news_category").value = "IPO";
+  document.getElementById("news_date").value = "";
+  document.getElementById("news_source").value = "";
+  document.getElementById("news_link").value = "";
+  document.getElementById("news_summary").value = "";
+  document.getElementById("news_active").value = "true";
+  editingNewsId = null;
+}
+
 function badgeClass(status) {
   if (status === "Open") return "badge badge-open";
   if (status === "Closed") return "badge badge-closed";
@@ -266,9 +366,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   const { data } = await supabaseClient.auth.getSession();
 
   if (data.session) {
-    document.getElementById("loginBox").style.display = "none";
-    document.getElementById("adminBox").style.display = "grid";
-    document.getElementById("liveBox").style.display = "grid";
-    loadAdminIPOs();
+    showAdminPanels();
   }
 });
