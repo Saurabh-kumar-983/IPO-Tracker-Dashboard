@@ -594,3 +594,61 @@ tbody tr:hover{
   background: #fee2e2;
   color: #991b1b;
 }
+.allotment-form {
+  padding: 24px;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 180px;
+  gap: 16px;
+}
+
+.allotment-form select,
+.allotment-form input,
+.allotment-form button {
+  height: 52px;
+  border: 1px solid #dbe3ef;
+  border-radius: 14px;
+  padding: 0 15px;
+  font-size: 15px;
+}
+
+.allotment-form button {
+  background: #2563eb;
+  color: white;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.allotment-form button:hover {
+  background: #1d4ed8;
+}
+
+.info-box-grid {
+  padding: 24px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+}
+
+.info-card {
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  padding: 22px;
+}
+
+.info-card h3 {
+  margin-top: 0;
+}
+
+.note-box {
+  padding: 24px;
+  color: #475569;
+  line-height: 1.7;
+}
+
+@media(max-width:900px) {
+  .allotment-form,
+  .info-box-grid {
+    grid-template-columns: 1fr;
+  }
+}
