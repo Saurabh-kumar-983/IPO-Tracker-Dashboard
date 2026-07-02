@@ -65,30 +65,22 @@
 
 <section class="widget-grid">
   <div class="widget-card">
-    <div class="widget-head">
-      <h3>🔥 Live GMP Board</h3>
-    </div>
+    <div class="widget-head"><h3>🔥 Live GMP Board</h3></div>
     <div id="gmpWidget">Loading...</div>
   </div>
 
   <div class="widget-card small-widget">
-    <div class="widget-head">
-      <h3>⏳ Closing Today</h3>
-    </div>
+    <div class="widget-head"><h3>⏳ Closing Today</h3></div>
     <div id="closingWidget">0 IPOs</div>
   </div>
 
   <div class="widget-card small-widget">
-    <div class="widget-head">
-      <h3>🚀 Listing Today</h3>
-    </div>
+    <div class="widget-head"><h3>🚀 Listing Today</h3></div>
     <div id="listingWidget">0 IPOs</div>
   </div>
 
   <div class="widget-card">
-    <div class="widget-head">
-      <h3>📅 IPO Calendar</h3>
-    </div>
+    <div class="widget-head"><h3>📅 IPO Calendar</h3></div>
     <div id="calendarWidget">Loading...</div>
   </div>
 </section>
@@ -100,22 +92,24 @@
   </div>
 
   <div class="subscription-grid">
-    <div class="sub-card">
-      <p>Highest Total Subscription</p>
-      <h2 id="highestTotalSub">-</h2>
-    </div>
-    <div class="sub-card">
-      <p>Highest Retail Demand</p>
-      <h2 id="highestRetailSub">-</h2>
-    </div>
-    <div class="sub-card">
-      <p>Highest QIB Demand</p>
-      <h2 id="highestQibSub">-</h2>
-    </div>
-    <div class="sub-card">
-      <p>Highest NII Demand</p>
-      <h2 id="highestNiiSub">-</h2>
-    </div>
+    <div class="sub-card"><p>Highest Total Subscription</p><h2 id="highestTotalSub">-</h2></div>
+    <div class="sub-card"><p>Highest Retail Demand</p><h2 id="highestRetailSub">-</h2></div>
+    <div class="sub-card"><p>Highest QIB Demand</p><h2 id="highestQibSub">-</h2></div>
+    <div class="sub-card"><p>Highest NII Demand</p><h2 id="highestNiiSub">-</h2></div>
+  </div>
+</section>
+
+<section class="table-card">
+  <div class="table-head">
+    <h2>IPO Scoring Engine</h2>
+    <p>AI-style demand score</p>
+  </div>
+
+  <div class="subscription-grid">
+    <div class="sub-card"><p>Top Scored IPO</p><h2 id="topScoredIPO">-</h2></div>
+    <div class="sub-card"><p>Highest Score</p><h2 id="highestScore">-</h2></div>
+    <div class="sub-card"><p>Hot IPOs</p><h2 id="hotIPOCount">0</h2></div>
+    <div class="sub-card"><p>Moderate IPOs</p><h2 id="moderateIPOCount">0</h2></div>
   </div>
 </section>
 
@@ -140,15 +134,15 @@
           <th>Close</th>
           <th>Allotment</th>
           <th>Listing</th>
+          <th>Score</th>
+          <th>Signal</th>
           <th>Status</th>
           <th>Actions</th>
         </tr>
       </thead>
 
       <tbody id="ipoTableBody">
-        <tr>
-          <td colspan="13">Loading IPO data...</td>
-        </tr>
+        <tr><td colspan="15">Loading IPO data...</td></tr>
       </tbody>
     </table>
   </div>
