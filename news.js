@@ -1,31 +1,29 @@
-const newsData = [
-  {
-    title: "Demo Industries IPO GMP updated to ₹45",
-    category: "GMP",
-    date: "2026-07-01",
-    summary: "Demo Industries Ltd is showing a grey market premium of ₹45 with estimated listing gain around 40.9%.",
-    source: "Internal Update",
-    link: "gmp.html"
-  },
-  {
-    title: "Demo Industries IPO allotment expected on 06 July 2026",
-    category: "Allotment",
-    date: "2026-07-01",
-    summary: "Investors can check allotment status through the official registrar link after basis of allotment is finalized.",
-    source: "Registrar Update",
-    link: "index.html"
-  },
-  {
-    title: "Demo Industries IPO listing scheduled for 09 July 2026",
-    category: "Listing",
-    date: "2026-07-01",
-    summary: "Listing date is currently scheduled for 09 July 2026 as per IPO timeline.",
-    source: "IPO Timeline",
-    link: "index.html"
-  }
-];
+const SUPABASE_URL = "https://iizpmjortvijdwyydtec.supabase.co";
 
-let activeCategory = "";
+const SUPABASE_KEY = "YOUR_ANON_KEY";
+
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let newsData = [];
+
+async function loadNews() {
+  const newsList = document.getElementById("newsList");
+  newsList.innerHTML = "Loading news...";
+
+  const { data, error } = await supabaseClient
+    .from("ipo_news")
+    .select("*")
+    .eq("is_active", true)
+    .order("news_date", { ascending: false });
+
+  if (error) {
+    newsList.innerHTML = `<p>${error.message}</p>`;
+    return;
+  }
+
+  newsData = data || [];
+  renderNews(newsData);
+}
 
 function renderNews(data) {
   const newsList = document.getElementById("newsList");
@@ -39,33 +37,28 @@ function renderNews(data) {
   newsList.innerHTML = data.map(item => `
     <div class="news-card">
       <div class="news-top">
-        <span class="news-tag">${item.category}</span>
-        <small>${item.date}</small>
+        <span class="news-tag">${item.category || "IPO"}</span>
+        <small>${item.news_date || "-"}</small>
       </div>
 
-      <h3>${item.title}</h3>
-      <p>${item.summary}</p>
+      <h3>${item.title || "-"}</h3>
+      <p>${item.summary || "No summary available."}</p>
 
       <div class="news-bottom">
-        <span>${item.source}</span>
-        <a href="${item.link}">Read More</a>
+        <span>${item.source || "IPO Tracker"}</span>
+        ${item.link ? `<a href="${item.link}">Read More</a>` : ""}
       </div>
     </div>
   `).join("");
 }
 
 function filterNews(category) {
-  activeCategory = category;
-
   if (!category) {
     renderNews(newsData);
     return;
   }
 
-  const filtered = newsData.filter(item => item.category === category);
-  renderNews(filtered);
+  renderNews(newsData.filter(item => item.category === category));
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  renderNews(newsData);
-});
+document.addEventListener("DOMContentLoaded", loadNews);
