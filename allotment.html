@@ -14,7 +14,7 @@
     <div class="logo">🎯</div>
     <div>
       <h2>Allotment Checker</h2>
-      <p>Check IPO allotment through registrar links</p>
+      <p>Registrar-wise IPO allotment assistant</p>
     </div>
   </div>
 
@@ -29,7 +29,7 @@
 <section class="gmp-control-card">
   <div>
     <h2>IPO Allotment Checker</h2>
-    <p>Select IPO, enter PAN/Application details, and continue to the official registrar page.</p>
+    <p>Select IPO, view registrar-specific steps, then continue to the official allotment page.</p>
   </div>
   <div class="live-pill">● OFFICIAL LINKS</div>
 </section>
@@ -41,50 +41,49 @@
   </div>
 
   <div class="allotment-form">
-    <select id="ipoSelect">
+    <select id="ipoSelect" onchange="showIPOInfo()">
       <option value="">Loading IPOs...</option>
     </select>
 
     <input id="panNumber" placeholder="Enter PAN Number" maxlength="10" />
-
     <input id="applicationNumber" placeholder="Enter Application Number" />
 
     <button onclick="checkAllotment()">Check Allotment</button>
   </div>
 </section>
 
-<section class="table-card">
-  <div class="table-head">
-    <h2>How It Works</h2>
-    <p>Investor guide</p>
+<section class="allotment-layout">
+  <div class="table-card">
+    <div class="table-head">
+      <h2>Selected IPO Info</h2>
+      <p>Live details</p>
+    </div>
+
+    <div id="ipoInfoBox" class="note-box">
+      Select IPO to view registrar details.
+    </div>
   </div>
 
-  <div class="info-box-grid">
-    <div class="info-card">
-      <h3>1. Select IPO</h3>
-      <p>Choose the IPO from the dropdown list. The registrar link is fetched from your Supabase database.</p>
+  <div class="table-card">
+    <div class="table-head">
+      <h2>Registrar Guide</h2>
+      <p>Step-by-step</p>
     </div>
 
-    <div class="info-card">
-      <h3>2. Enter Details</h3>
-      <p>Keep your PAN number or application number ready before opening the registrar page.</p>
-    </div>
-
-    <div class="info-card">
-      <h3>3. Verify Officially</h3>
-      <p>You will be redirected to the official registrar website to check allotment status securely.</p>
+    <div id="registrarGuideBox" class="note-box">
+      Select IPO to view registrar-specific instructions.
     </div>
   </div>
 </section>
 
 <section class="table-card">
   <div class="table-head">
-    <h2>Important Note</h2>
-    <p>Safety first</p>
+    <h2>Important Safety Note</h2>
+    <p>Investor protection</p>
   </div>
 
   <div class="note-box">
-    IPO allotment status should always be verified only through official registrar websites such as Link Intime, KFintech, Bigshare, MUFG Intime, or exchange/official IPO sources. This tool does not store PAN or application number.
+    This tool redirects you to the official registrar website. It does not store PAN number, application number, demat details, bank details, OTP, or login credentials.
   </div>
 </section>
 
