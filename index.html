@@ -3,152 +3,258 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>IPO Tracker Dashboard</title>
-  <link rel="stylesheet" href="style.css?v=3.0.0" />
+  <title>IPO Tracker Dashboard | India IPO Intelligence</title>
+  <link rel="stylesheet" href="style.css?v=4.0.0" />
 </head>
 
 <body>
 
-<header class="topbar">
-  <div class="brand">
-    <div class="logo">📊</div>
-    <div>
-      <h2>IPO Tracker</h2>
-      <p>India IPO Intelligence</p>
+<div class="app-shell">
+
+  <aside class="sidebar">
+    <div class="side-brand">
+      <div class="side-logo">📊</div>
+      <div>
+        <h2>IPO Tracker</h2>
+        <p>Market Intelligence</p>
+      </div>
     </div>
-  </div>
 
- <nav>
-    <a class="active" onclick="showSection('Dashboard')">Dashboard</a>
-    <a onclick="showSection('Current IPOs')">Current IPOs</a>
-    <a onclick="showSection('Upcoming IPOs')">Upcoming IPOs</a>
-    <a onclick="showSection('Past IPOs')">Past IPOs</a>
-    <a href="gmp.html">GMP</a>
-    <a href="news.html">News</a>
-    <a href="allotment.html">Allotment</a>
-    <a href="admin.html">Admin</a>
-</nav>
+    <nav class="side-nav">
+      <a class="active" onclick="showSection('Dashboard')">Dashboard</a>
+      <a onclick="showSection('Current IPOs')">Current IPOs</a>
+      <a onclick="showSection('Upcoming IPOs')">Upcoming IPOs</a>
+      <a onclick="showSection('Past IPOs')">Past IPOs</a>
+      <a href="gmp.html">GMP Dashboard</a>
+      <a href="news.html">IPO News</a>
+      <a href="allotment.html">Allotment Checker</a>
+      <a href="admin.html">Admin Panel</a>
+    </nav>
 
-  <button class="download" onclick="downloadCSV()">Download CSV</button>
-</header>
+    <div class="side-footer">
+      <span>● Live Data</span>
+      <small>Powered by Supabase</small>
+    </div>
+  </aside>
 
-<section class="kpi-wrap">
-  <div class="kpi"><span>📋</span><p>Total IPOs</p><h2 id="totalCount">0</h2></div>
-  <div class="kpi"><span>📈</span><p>Upcoming IPOs</p><h2 id="upcomingCount">0</h2></div>
-  <div class="kpi"><span>⏳</span><p>Open IPOs</p><h2 id="openCount">0</h2></div>
-  <div class="kpi"><span>✅</span><p>Closed IPOs</p><h2 id="closedCount">0</h2></div>
-</section>
+  <main class="main-content">
 
-<section class="filter-panel">
-  <input id="searchInput" onkeyup="applyFilters()" placeholder="Search by company name or symbol..." />
+    <header class="topbar v4-topbar">
+      <div>
+        <h1>IPO Intelligence Dashboard</h1>
+        <p>Track IPO dates, GMP, subscription demand, scoring signals and allotment links.</p>
+      </div>
 
-  <select id="statusFilter" onchange="applyFilters()">
-    <option value="">All Status</option>
-    <option value="Upcoming">Upcoming</option>
-    <option value="Open">Open</option>
-    <option value="Closed">Closed</option>
-  </select>
+      <div class="top-actions">
+        <a href="allotment.html" class="ghost-btn">Check Allotment</a>
+        <button class="download" onclick="downloadCSV()">Download CSV</button>
+      </div>
+    </header>
 
-  <select id="typeFilter" onchange="applyFilters()">
-    <option value="">All Types</option>
-    <option value="Mainboard">Mainboard</option>
-    <option value="SME">SME</option>
-  </select>
+    <section class="hero-panel">
+      <div>
+        <span class="eyebrow">India IPO Market Pulse</span>
+        <h2>Discover stronger IPO opportunities with live demand signals.</h2>
+        <p>
+          Combine GMP, subscription demand, key dates, registrar links and IPO scoring in one clean dashboard.
+        </p>
+      </div>
 
-  <button onclick="resetFilters()">Reset</button>
-</section>
+      <div class="hero-metric">
+        <span>IPO Score Engine</span>
+        <strong id="highestScore">-</strong>
+        <small>Highest current score</small>
+      </div>
+    </section>
 
-<section class="quick-filters">
-  <button onclick="quickFilter('')">All</button>
-  <button onclick="quickFilter('Open')">Open</button>
-  <button onclick="quickFilter('Upcoming')">Upcoming</button>
-  <button onclick="quickFilter('Closed')">Closed</button>
-</section>
+    <section class="kpi-wrap v4-kpis">
+      <div class="kpi clickable" onclick="quickFilter('')">
+        <span>📋</span>
+        <p>Total IPOs</p>
+        <h2 id="totalCount">0</h2>
+      </div>
 
-<section class="widget-grid">
-  <div class="widget-card">
-    <div class="widget-head"><h3>🔥 Live GMP Board</h3></div>
-    <div id="gmpWidget">Loading...</div>
-  </div>
+      <div class="kpi clickable" onclick="quickFilter('Upcoming')">
+        <span>📈</span>
+        <p>Upcoming IPOs</p>
+        <h2 id="upcomingCount">0</h2>
+      </div>
 
-  <div class="widget-card small-widget">
-    <div class="widget-head"><h3>⏳ Closing Today</h3></div>
-    <div id="closingWidget">0 IPOs</div>
-  </div>
+      <div class="kpi clickable" onclick="quickFilter('Open')">
+        <span>⏳</span>
+        <p>Open IPOs</p>
+        <h2 id="openCount">0</h2>
+      </div>
 
-  <div class="widget-card small-widget">
-    <div class="widget-head"><h3>🚀 Listing Today</h3></div>
-    <div id="listingWidget">0 IPOs</div>
-  </div>
+      <div class="kpi clickable" onclick="quickFilter('Closed')">
+        <span>✅</span>
+        <p>Closed IPOs</p>
+        <h2 id="closedCount">0</h2>
+      </div>
+    </section>
 
-  <div class="widget-card">
-    <div class="widget-head"><h3>📅 IPO Calendar</h3></div>
-    <div id="calendarWidget">Loading...</div>
-  </div>
-</section>
+    <section class="filter-panel v4-filter">
+      <input id="searchInput" onkeyup="applyFilters()" placeholder="Search company name or symbol..." />
 
-<section class="table-card">
-  <div class="table-head">
-    <h2>Subscription Analytics</h2>
-    <p>Demand ranking</p>
-  </div>
+      <select id="statusFilter" onchange="applyFilters()">
+        <option value="">All Status</option>
+        <option value="Upcoming">Upcoming</option>
+        <option value="Open">Open</option>
+        <option value="Closed">Closed</option>
+      </select>
 
-  <div class="subscription-grid">
-    <div class="sub-card"><p>Highest Total Subscription</p><h2 id="highestTotalSub">-</h2></div>
-    <div class="sub-card"><p>Highest Retail Demand</p><h2 id="highestRetailSub">-</h2></div>
-    <div class="sub-card"><p>Highest QIB Demand</p><h2 id="highestQibSub">-</h2></div>
-    <div class="sub-card"><p>Highest NII Demand</p><h2 id="highestNiiSub">-</h2></div>
-  </div>
-</section>
+      <select id="typeFilter" onchange="applyFilters()">
+        <option value="">All Types</option>
+        <option value="Mainboard">Mainboard</option>
+        <option value="SME">SME</option>
+      </select>
 
-<section class="table-card">
-  <div class="table-head">
-    <h2>IPO Scoring Engine</h2>
-    <p>AI-style demand score</p>
-  </div>
+      <button onclick="resetFilters()">Reset</button>
+    </section>
 
-  <div class="subscription-grid">
-    <div class="sub-card"><p>Top Scored IPO</p><h2 id="topScoredIPO">-</h2></div>
-    <div class="sub-card"><p>Highest Score</p><h2 id="highestScore">-</h2></div>
-    <div class="sub-card"><p>Hot IPOs</p><h2 id="hotIPOCount">0</h2></div>
-    <div class="sub-card"><p>Moderate IPOs</p><h2 id="moderateIPOCount">0</h2></div>
-  </div>
-</section>
+    <section class="quick-filters v4-pills">
+      <button onclick="quickFilter('')">All IPOs</button>
+      <button onclick="quickFilter('Open')">Open Now</button>
+      <button onclick="quickFilter('Upcoming')">Upcoming</button>
+      <button onclick="quickFilter('Closed')">Past IPOs</button>
+      <a href="gmp.html">View GMP</a>
+      <a href="news.html">Latest News</a>
+    </section>
 
-<section class="table-card">
-  <div class="table-head">
-    <h2>IPO Market List</h2>
-    <p id="recordCount">0 records</p>
-  </div>
+    <section class="widget-grid v4-widget-grid">
+      <div class="widget-card">
+        <div class="widget-head">
+          <h3>🔥 Live GMP Board</h3>
+          <small>Grey market pulse</small>
+        </div>
+        <div id="gmpWidget">Loading...</div>
+      </div>
 
-  <div class="table-scroll">
-    <table>
-      <thead>
-        <tr>
-          <th>Company Name</th>
-          <th>Type</th>
-          <th>Price Band</th>
-          <th>Issue Size</th>
-          <th>Lot</th>
-          <th>GMP</th>
-          <th>Total Sub.</th>
-          <th>Open</th>
-          <th>Close</th>
-          <th>Allotment</th>
-          <th>Listing</th>
-          <th>Score</th>
-          <th>Signal</th>
-          <th>Status</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
+      <div class="widget-card small-widget">
+        <div class="widget-head">
+          <h3>⏳ Closing Today</h3>
+          <small>Action required</small>
+        </div>
+        <div id="closingWidget">0 IPOs</div>
+      </div>
 
-      <tbody id="ipoTableBody">
-        <tr><td colspan="15">Loading IPO data...</td></tr>
-      </tbody>
-    </table>
-  </div>
-</section>
+      <div class="widget-card small-widget">
+        <div class="widget-head">
+          <h3>🚀 Listing Today</h3>
+          <small>Market debut</small>
+        </div>
+        <div id="listingWidget">0 IPOs</div>
+      </div>
+
+      <div class="widget-card">
+        <div class="widget-head">
+          <h3>📅 IPO Calendar</h3>
+          <small>Important dates</small>
+        </div>
+        <div id="calendarWidget">Loading...</div>
+      </div>
+    </section>
+
+    <section class="analytics-grid">
+      <div class="table-card">
+        <div class="table-head">
+          <div>
+            <h2>Subscription Analytics</h2>
+            <p>Demand ranking across investor categories</p>
+          </div>
+        </div>
+
+        <div class="subscription-grid compact">
+          <div class="sub-card">
+            <p>Highest Total</p>
+            <h2 id="highestTotalSub">-</h2>
+          </div>
+          <div class="sub-card">
+            <p>Retail Demand</p>
+            <h2 id="highestRetailSub">-</h2>
+          </div>
+          <div class="sub-card">
+            <p>QIB Demand</p>
+            <h2 id="highestQibSub">-</h2>
+          </div>
+          <div class="sub-card">
+            <p>NII Demand</p>
+            <h2 id="highestNiiSub">-</h2>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-card">
+        <div class="table-head">
+          <div>
+            <h2>IPO Scoring Engine</h2>
+            <p>Demand-weighted opportunity signal</p>
+          </div>
+        </div>
+
+        <div class="subscription-grid compact">
+          <div class="sub-card">
+            <p>Top IPO</p>
+            <h2 id="topScoredIPO">-</h2>
+          </div>
+          <div class="sub-card">
+            <p>Highest Score</p>
+            <h2 id="highestScoreCard">-</h2>
+          </div>
+          <div class="sub-card">
+            <p>Hot IPOs</p>
+            <h2 id="hotIPOCount">0</h2>
+          </div>
+          <div class="sub-card">
+            <p>Moderate</p>
+            <h2 id="moderateIPOCount">0</h2>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="table-card market-table-card">
+      <div class="table-head">
+        <div>
+          <h2>IPO Market List</h2>
+          <p>Complete market view with GMP, subscription and score signals</p>
+        </div>
+        <p id="recordCount">0 records</p>
+      </div>
+
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Company Name</th>
+              <th>Type</th>
+              <th>Price Band</th>
+              <th>Issue Size</th>
+              <th>Lot</th>
+              <th>GMP</th>
+              <th>Total Sub.</th>
+              <th>Open</th>
+              <th>Close</th>
+              <th>Allotment</th>
+              <th>Listing</th>
+              <th>Score</th>
+              <th>Signal</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+
+          <tbody id="ipoTableBody">
+            <tr>
+              <td colspan="15">Loading IPO data...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="app.js"></script>
