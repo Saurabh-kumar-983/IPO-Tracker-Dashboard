@@ -1,155 +1,1171 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>IPO Tracker Dashboard</title>
-  <link rel="stylesheet" href="style.css" />
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>
+
+IPO Terminal Pro
+
+</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link rel="preconnect"
+href="https://fonts.gstatic.com"
+crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css">
+
+<link rel="stylesheet" href="css/layout.css">
+
+<link rel="stylesheet" href="css/components.css">
+
+<link rel="stylesheet" href="css/dashboard.css">
+
+<link rel="stylesheet" href="css/responsive.css">
+
 </head>
 
 <body>
 
+<div class="app">
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar">
+
+<div class="logo-area">
+
+<div class="logo-icon">
+
+📊
+
+</div>
+
+<div>
+
+<h2>
+
+IPO Terminal
+
+</h2>
+
+<p>
+
+India IPO Intelligence
+
+</p>
+
+</div>
+
+</div>
+
+<nav class="menu">
+
+<a class="active">
+
+Overview
+
+</a>
+
+<a onclick="showSection('Current IPOs')">
+
+Current IPOs
+
+</a>
+
+<a onclick="showSection('Upcoming IPOs')">
+
+Upcoming IPOs
+
+</a>
+
+<a onclick="showSection('Past IPOs')">
+
+Past IPOs
+
+</a>
+
+<a href="gmp.html">
+
+GMP Board
+
+</a>
+
+<a href="news.html">
+
+News Center
+
+</a>
+
+<a href="allotment.html">
+
+Allotment
+
+</a>
+
+<a href="admin.html">
+
+Admin
+
+</a>
+
+</nav>
+
+<div class="sidebar-footer">
+
+<div class="status">
+
+<div class="status-dot"></div>
+
+<span>
+
+Live Market
+
+</span>
+
+</div>
+
+<p>
+
+Powered by Supabase
+
+</p>
+
+</div>
+
+</aside>
+
+<!-- CONTENT -->
+
+<div class="content">
+
 <header class="topbar">
-  <div class="brand">
-    <div class="logo">📊</div>
-    <div>
-      <h2>IPO Tracker</h2>
-      <p>India IPO Intelligence</p>
-    </div>
-  </div>
 
-  <nav>
-    <a class="active" onclick="showSection('Dashboard')">Dashboard</a>
-    <a onclick="showSection('Current IPOs')">Current IPOs</a>
-    <a onclick="showSection('Upcoming IPOs')">Upcoming IPOs</a>
-    <a onclick="showSection('Past IPOs')">Past IPOs</a>
-    <a href="gmp.html">GMP</a>
-    <a href="news.html">News</a>
-  </nav>
+<div>
 
-  <button class="download" onclick="downloadCSV()">Download CSV</button>
+<span class="eyebrow">
+
+IPO TERMINAL
+
+</span>
+
+<h1>
+
+IPO Market Dashboard
+
+</h1>
+
+<p>
+
+Professional IPO Intelligence Platform
+
+</p>
+
+</div>
+
+<div class="top-actions">
+
+<div class="search-box">
+
+<input
+
+type="text"
+
+id="searchInput"
+
+placeholder="Search IPO..."
+
+onkeyup="applyFilters()">
+
+</div>
+
+<a
+href="allotment.html"
+class="secondary-btn">
+
+Check Allotment
+
+</a>
+
+<button
+class="primary-btn"
+onclick="downloadCSV()">
+
+Export CSV
+
+</button>
+
+</div>
+
 </header>
 
-<section class="kpi-wrap">
-  <div class="kpi"><span>📋</span><p>Total IPOs</p><h2 id="totalCount">0</h2></div>
-  <div class="kpi"><span>📈</span><p>Upcoming IPOs</p><h2 id="upcomingCount">0</h2></div>
-  <div class="kpi"><span>⏳</span><p>Open IPOs</p><h2 id="openCount">0</h2></div>
-  <div class="kpi"><span>✅</span><p>Closed IPOs</p><h2 id="closedCount">0</h2></div>
+<!-- HERO -->
+
+<section class="hero">
+
+<div class="hero-left">
+
+<div class="live-pill">
+
+● LIVE MARKET
+
+</div>
+
+<h2>
+
+Track Every IPO
+
+Before Everyone Else
+
+</h2>
+
+<p>
+
+Real-time IPO Intelligence combining
+
+Grey Market Premium,
+
+Subscription Data,
+
+AI Scoring,
+
+Listing Calendar,
+
+Registrar Links,
+
+Company Research,
+
+and Market Signals.
+
+</p>
+
+<div class="hero-buttons">
+
+<button
+class="primary-btn"
+onclick="quickFilter('Open')">
+
+View Open IPOs
+
+</button>
+
+<a
+href="gmp.html"
+class="secondary-btn">
+
+Open GMP Dashboard
+
+</a>
+
+</div>
+
+</div>
+
+<div class="hero-right">
+
+<div class="market-card">
+
+<div class="market-title">
+
+Today's Market
+
+</div>
+
+<div class="market-grid">
+
+<div>
+
+<span>
+
+Total IPOs
+
+</span>
+
+<h2 id="totalCount">
+
+0
+
+</h2>
+
+</div>
+
+<div>
+
+<span>
+
+Open IPOs
+
+</span>
+
+<h2 id="openCount">
+
+0
+
+</h2>
+
+</div>
+
+<div>
+
+<span>
+
+Upcoming
+
+</span>
+
+<h2 id="upcomingCount">
+
+0
+
+</h2>
+
+</div>
+
+<div>
+
+<span>
+
+Closed
+
+</span>
+
+<h2 id="closedCount">
+
+0
+
+</h2>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
 </section>
 
-<section class="filter-panel">
-  <input id="searchInput" onkeyup="applyFilters()" placeholder="Search by company name or symbol..." />
+<!-- LIVE MARKET TICKER -->
 
-  <select id="statusFilter" onchange="applyFilters()">
-    <option value="">All Status</option>
-    <option value="Upcoming">Upcoming</option>
-    <option value="Open">Open</option>
-    <option value="Closed">Closed</option>
-  </select>
+<section class="ticker-section">
 
-  <select id="typeFilter" onchange="applyFilters()">
-    <option value="">All Types</option>
-    <option value="Mainboard">Mainboard</option>
-    <option value="SME">SME</option>
-  </select>
+<div class="ticker-title">
 
-  <button onclick="resetFilters()">Reset</button>
+LIVE MARKET
+
+</div>
+
+<div
+id="marketTicker"
+class="ticker">
+
+Loading Market...
+
+</div>
+
+</section>
+<!-- KPI DASHBOARD -->
+
+<section class="dashboard-grid">
+
+    <div class="stat-card">
+        <div class="stat-icon blue">📋</div>
+        <div>
+            <p>Total IPOs</p>
+            <h2 id="totalCountCard">0</h2>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon green">🟢</div>
+        <div>
+            <p>Open IPOs</p>
+            <h2 id="openCountCard">0</h2>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon orange">📅</div>
+        <div>
+            <p>Upcoming IPOs</p>
+            <h2 id="upcomingCountCard">0</h2>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon red">✔</div>
+        <div>
+            <p>Closed IPOs</p>
+            <h2 id="closedCountCard">0</h2>
+        </div>
+    </div>
+
 </section>
 
-<section class="quick-filters">
-  <button onclick="quickFilter('')">All</button>
-  <button onclick="quickFilter('Open')">Open</button>
-  <button onclick="quickFilter('Upcoming')">Upcoming</button>
-  <button onclick="quickFilter('Closed')">Closed</button>
+<!-- MARKET OVERVIEW -->
+
+<section class="overview-grid">
+
+    <div class="overview-card">
+
+        <div class="section-header">
+
+            <div>
+
+                <h3>Market Overview</h3>
+
+                <p>Today's IPO Activity</p>
+
+            </div>
+
+        </div>
+
+        <div class="overview-list">
+
+            <div>
+
+                <span>Average GMP</span>
+
+                <strong id="avgGMP">
+
+                    ₹0
+
+                </strong>
+
+            </div>
+
+            <div>
+
+                <span>Highest GMP</span>
+
+                <strong id="highestGMP">
+
+                    ₹0
+
+                </strong>
+
+            </div>
+
+            <div>
+
+                <span>Market Sentiment</span>
+
+                <strong id="marketSentiment">
+
+                    Neutral
+
+                </strong>
+
+            </div>
+
+            <div>
+
+                <span>Active Listings</span>
+
+                <strong id="listingToday">
+
+                    0
+
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="overview-card">
+
+        <div class="section-header">
+
+            <div>
+
+                <h3>IPO Opportunity</h3>
+
+                <p>AI Opportunity Engine</p>
+
+            </div>
+
+        </div>
+
+        <div class="opportunity-card">
+
+            <span class="opportunity-label">
+
+                TOP PICK
+
+            </span>
+
+            <h2 id="topScoredIPO">
+
+                --
+
+            </h2>
+
+            <div class="score-box">
+
+                <span>
+
+                    AI SCORE
+
+                </span>
+
+                <h1 id="highestScore">
+
+                    0
+
+                </h1>
+
+            </div>
+
+            <div class="signal-box">
+
+                <span id="marketSignal">
+
+                    Market Loading...
+
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
 </section>
 
-<section class="widget-grid">
-  <div class="widget-card">
-    <div class="widget-head"><h3>🔥 Live GMP Board</h3></div>
-    <div id="gmpWidget">Loading...</div>
-  </div>
+<!-- HEATMAP -->
 
-  <div class="widget-card small-widget">
-    <div class="widget-head"><h3>⏳ Closing Today</h3></div>
-    <div id="closingWidget">0 IPOs</div>
-  </div>
+<section class="heatmap-section">
 
-  <div class="widget-card small-widget">
-    <div class="widget-head"><h3>🚀 Listing Today</h3></div>
-    <div id="listingWidget">0 IPOs</div>
-  </div>
+    <div class="section-header">
 
-  <div class="widget-card">
-    <div class="widget-head"><h3>📅 IPO Calendar</h3></div>
-    <div id="calendarWidget">Loading...</div>
-  </div>
+        <div>
+
+            <h3>IPO Heatmap</h3>
+
+            <p>Demand Classification</p>
+
+        </div>
+
+    </div>
+
+    <div class="heatmap-grid">
+
+        <div class="heat-box hot">
+
+            <small>🔥 Hot IPOs</small>
+
+            <h2 id="hotIPOCount">
+
+                0
+
+            </h2>
+
+        </div>
+
+        <div class="heat-box warm">
+
+            <small>🟡 Moderate</small>
+
+            <h2 id="moderateIPOCount">
+
+                0
+
+            </h2>
+
+        </div>
+
+        <div class="heat-box cold">
+
+            <small>🔴 Weak</small>
+
+            <h2 id="weakIPOCount">
+
+                0
+
+            </h2>
+
+        </div>
+
+        <div class="heat-box live">
+
+            <small>Live Market</small>
+
+            <h2 id="marketHealth">
+
+                Stable
+
+            </h2>
+
+        </div>
+
+    </div>
+
 </section>
 
-<section class="table-card">
-  <div class="table-head">
-    <h2>Subscription Analytics</h2>
-    <p>Demand ranking</p>
-  </div>
+<!-- LIVE WIDGETS -->
 
-  <div class="subscription-grid">
-    <div class="sub-card"><p>Highest Total Subscription</p><h2 id="highestTotalSub">-</h2></div>
-    <div class="sub-card"><p>Highest Retail Demand</p><h2 id="highestRetailSub">-</h2></div>
-    <div class="sub-card"><p>Highest QIB Demand</p><h2 id="highestQibSub">-</h2></div>
-    <div class="sub-card"><p>Highest NII Demand</p><h2 id="highestNiiSub">-</h2></div>
-  </div>
+<section class="widget-layout">
+
+    <div class="widget-card">
+
+        <div class="widget-title">
+
+            🔥 Live GMP
+
+        </div>
+
+        <div id="gmpWidget">
+
+            Loading...
+
+        </div>
+
+    </div>
+
+    <div class="widget-card">
+
+        <div class="widget-title">
+
+            📅 IPO Calendar
+
+        </div>
+
+        <div id="calendarWidget">
+
+            Loading...
+
+        </div>
+
+    </div>
+
+    <div class="widget-card">
+
+        <div class="widget-title">
+
+            ⏳ Closing Today
+
+        </div>
+
+        <div id="closingWidget">
+
+            Loading...
+
+        </div>
+
+    </div>
+
+    <div class="widget-card">
+
+        <div class="widget-title">
+
+            🚀 Listing Today
+
+        </div>
+
+        <div id="listingWidget">
+
+            Loading...
+
+        </div>
+
+    </div>
+
 </section>
 
-<section class="table-card">
-  <div class="table-head">
-    <h2>IPO Scoring Engine</h2>
-    <p>AI-style demand score</p>
-  </div>
+<!-- SUBSCRIPTION ANALYTICS -->
 
-  <div class="subscription-grid">
-    <div class="sub-card"><p>Top Scored IPO</p><h2 id="topScoredIPO">-</h2></div>
-    <div class="sub-card"><p>Highest Score</p><h2 id="highestScore">-</h2></div>
-    <div class="sub-card"><p>Hot IPOs</p><h2 id="hotIPOCount">0</h2></div>
-    <div class="sub-card"><p>Moderate IPOs</p><h2 id="moderateIPOCount">0</h2></div>
-  </div>
+<section class="analytics-section">
+
+    <div class="section-header">
+
+        <div>
+
+            <h3>Subscription Analytics</h3>
+
+            <p>Investor Demand</p>
+
+        </div>
+
+    </div>
+
+    <div class="analytics-grid">
+
+        <div class="analytics-card">
+
+            <span>Total Subscription</span>
+
+            <h2 id="highestTotalSub">
+
+                -
+
+            </h2>
+
+        </div>
+
+        <div class="analytics-card">
+
+            <span>Retail</span>
+
+            <h2 id="highestRetailSub">
+
+                -
+
+            </h2>
+
+        </div>
+
+        <div class="analytics-card">
+
+            <span>QIB</span>
+
+            <h2 id="highestQibSub">
+
+                -
+
+            </h2>
+
+        </div>
+
+        <div class="analytics-card">
+
+            <span>NII</span>
+
+            <h2 id="highestNiiSub">
+
+                -
+
+            </h2>
+
+        </div>
+
+    </div>
+
+</section>
+<!-- ===========================================
+     MARKET TABLE
+============================================ -->
+
+<section class="market-section">
+
+    <div class="section-header">
+
+        <div>
+
+            <h3>IPO Market Terminal</h3>
+
+            <p>Live IPO Database & Intelligence</p>
+
+        </div>
+
+        <div class="header-actions">
+
+            <button onclick="quickFilter('Open')">
+                Open IPO
+            </button>
+
+            <button onclick="quickFilter('Upcoming')">
+                Upcoming
+            </button>
+
+            <button onclick="quickFilter('Closed')">
+                Closed
+            </button>
+
+            <button onclick="resetFilters()">
+                Reset
+            </button>
+
+        </div>
+
+    </div>
+
+    <div class="terminal-toolbar">
+
+        <div class="toolbar-left">
+
+            <input
+                id="tableSearch"
+                type="text"
+                placeholder="Search Company..."
+                onkeyup="applyFilters()">
+
+        </div>
+
+        <div class="toolbar-right">
+
+            <select id="statusFilter" onchange="applyFilters()">
+
+                <option value="">All Status</option>
+                <option>Open</option>
+                <option>Upcoming</option>
+                <option>Closed</option>
+
+            </select>
+
+            <select id="typeFilter" onchange="applyFilters()">
+
+                <option value="">IPO Type</option>
+                <option>Mainboard</option>
+                <option>SME</option>
+
+            </select>
+
+            <button
+                class="export-btn"
+                onclick="downloadCSV()">
+
+                Export CSV
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <div class="market-table">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Company</th>
+
+                    <th>Type</th>
+
+                    <th>Price</th>
+
+                    <th>Issue Size</th>
+
+                    <th>Lot</th>
+
+                    <th>GMP</th>
+
+                    <th>Total Sub.</th>
+
+                    <th>Open</th>
+
+                    <th>Close</th>
+
+                    <th>Listing</th>
+
+                    <th>AI Score</th>
+
+                    <th>Signal</th>
+
+                    <th>Status</th>
+
+                    <th>Action</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="ipoTableBody">
+
+                <tr>
+
+                    <td colspan="14">
+
+                        Loading IPO Database...
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
 </section>
 
-<section class="table-card">
-  <div class="table-head">
-    <h2>IPO Market List</h2>
-    <p id="recordCount">0 records</p>
-  </div>
+<!-- ===========================================
+     DASHBOARD INSIGHTS
+============================================ -->
 
-  <div class="table-scroll">
-    <table>
-      <thead>
-        <tr>
-          <th>Company Name</th>
-          <th>Type</th>
-          <th>Price Band</th>
-          <th>Issue Size</th>
-          <th>Lot</th>
-          <th>GMP</th>
-          <th>Total Sub.</th>
-          <th>Open</th>
-          <th>Close</th>
-          <th>Allotment</th>
-          <th>Listing</th>
-          <th>Score</th>
-          <th>Signal</th>
-          <th>Status</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
+<section class="insight-grid">
 
-      <tbody id="ipoTableBody">
-        <tr><td colspan="15">Loading IPO data...</td></tr>
-      </tbody>
-    </table>
-  </div>
+    <div class="insight-card">
+
+        <span>
+
+            Market Sentiment
+
+        </span>
+
+        <h2 id="marketSentimentLarge">
+
+            Bullish
+
+        </h2>
+
+        <small>
+
+            Calculated using GMP and Subscription Demand
+
+        </small>
+
+    </div>
+
+    <div class="insight-card">
+
+        <span>
+
+            Average AI Score
+
+        </span>
+
+        <h2 id="averageAIScore">
+
+            0
+
+        </h2>
+
+        <small>
+
+            Portfolio Quality Indicator
+
+        </small>
+
+    </div>
+
+    <div class="insight-card">
+
+        <span>
+
+            Highest GMP
+
+        </span>
+
+        <h2 id="highestGMPLarge">
+
+            ₹0
+
+        </h2>
+
+        <small>
+
+            Current Grey Market Leader
+
+        </small>
+
+    </div>
+
+    <div class="insight-card">
+
+        <span>
+
+            Average Subscription
+
+        </span>
+
+        <h2 id="averageSubscription">
+
+            0x
+
+        </h2>
+
+        <small>
+
+            Retail + QIB + NII Combined
+
+        </small>
+
+    </div>
+
 </section>
+
+<!-- ===========================================
+     FOOTER STATS
+============================================ -->
+
+<section class="dashboard-footer">
+
+    <div class="footer-card">
+
+        <span>
+
+            Connected Database
+
+        </span>
+
+        <strong>
+
+            Supabase Cloud
+
+        </strong>
+
+    </div>
+
+    <div class="footer-card">
+
+        <span>
+
+            Market Status
+
+        </span>
+
+        <strong>
+
+            LIVE
+
+        </strong>
+
+    </div>
+
+    <div class="footer-card">
+
+        <span>
+
+            Last Sync
+
+        </span>
+
+        <strong id="lastUpdated">
+
+            Loading...
+
+        </strong>
+
+    </div>
+
+    <div class="footer-card">
+
+        <span>
+
+            IPO Records
+
+        </span>
+
+        <strong id="recordCount">
+
+            0
+
+        </strong>
+
+    </div>
+
+</section>
+<!-- ======================================================
+     FLOATING QUICK ACTIONS
+======================================================= -->
+
+<div class="floating-actions">
+
+    <a href="gmp.html" class="fab fab-blue" title="GMP Board">
+        📈
+    </a>
+
+    <a href="news.html" class="fab fab-green" title="IPO News">
+        📰
+    </a>
+
+    <a href="allotment.html" class="fab fab-orange" title="Allotment">
+        🎯
+    </a>
+
+</div>
+
+<!-- ======================================================
+     LOADING OVERLAY
+======================================================= -->
+
+<div id="loadingOverlay" class="loading-overlay">
+
+    <div class="loader-card">
+
+        <div class="loader"></div>
+
+        <h3>IPO Terminal</h3>
+
+        <p>Loading live market data...</p>
+
+    </div>
+
+</div>
+
+<!-- ======================================================
+     FOOTER
+======================================================= -->
+
+<footer class="site-footer">
+
+    <div>
+
+        <h3>IPO Terminal</h3>
+
+        <p>
+
+            Professional IPO Intelligence Platform powered by
+            Supabase, AI Scoring and Live Market Analytics.
+
+        </p>
+
+    </div>
+
+    <div class="footer-links">
+
+        <a href="index.html">Dashboard</a>
+
+        <a href="gmp.html">GMP</a>
+
+        <a href="news.html">News</a>
+
+        <a href="allotment.html">Allotment</a>
+
+        <a href="admin.html">Admin</a>
+
+    </div>
+
+    <div class="footer-copy">
+
+        © 2026 IPO Terminal • Built with ❤️ for Indian Investors
+
+    </div>
+
+</footer>
+
+</div>
+
+<!-- END CONTENT -->
+
+</div>
+
+<!-- END APP -->
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="app.js"></script>
+
+<script src="js/config.js"></script>
+
+<script src="js/utils.js"></script>
+
+<script src="js/score.js"></script>
+
+<script src="js/ticker.js"></script>
+
+<script src="js/widgets.js"></script>
+
+<script src="js/analytics.js"></script>
+
+<script src="js/table.js"></script>
+
+<script src="js/dashboard.js"></script>
 
 </body>
+
 </html>
