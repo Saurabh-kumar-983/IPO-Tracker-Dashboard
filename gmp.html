@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
   <title>IPO GMP Dashboard</title>
-  <link rel="stylesheet" href="style.css?v=3.0.0" />
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -18,10 +17,9 @@
   </div>
 
   <nav>
-  <a href="index.html">Dashboard</a>
-  <a href="gmp.html">GMP</a>
-  <a class="active" href="news.html">News</a>
-</nav>
+    <a href="index.html">Dashboard</a>
+    <a class="active">GMP</a>
+  </nav>
 </header>
 
 <section class="kpi-wrap">
@@ -31,27 +29,9 @@
   <div class="kpi"><span>📊</span><p>Total IPOs</p><h2 id="totalIPO">0</h2></div>
 </section>
 
-<section class="gmp-control-card">
-  <div>
-    <h2>Live GMP Market</h2>
-    <p>Track grey market premium, estimated listing gain and subscription movement.</p>
-  </div>
-
-  <div class="live-pill">● LIVE MARKET</div>
-</section>
-
-<section class="quick-filters">
-  <button onclick="filterGMP('')">All</button>
-  <button onclick="filterGMP('Mainboard')">Mainboard</button>
-  <button onclick="filterGMP('SME')">SME</button>
-  <button onclick="filterGMP('Open')">Open</button>
-  <button onclick="filterGMP('Upcoming')">Upcoming</button>
-</section>
-
 <section class="table-card">
   <div class="table-head">
-    <h2>Premium GMP Board</h2>
-    <p id="gmpRecordCount">0 records</p>
+    <h2>Live GMP Market</h2>
   </div>
 
   <div class="table-scroll">
@@ -60,18 +40,14 @@
         <tr>
           <th>Company</th>
           <th>GMP</th>
-          <th>Est. Gain</th>
-          <th>Total Sub.</th>
+          <th>Total Subscription</th>
           <th>Type</th>
-          <th>Status</th>
           <th>Open</th>
           <th>Close</th>
-          <th>Last Updated</th>
         </tr>
       </thead>
-
       <tbody id="gmpTableBody">
-        <tr><td colspan="9">Loading GMP data...</td></tr>
+        <tr><td colspan="6">Loading GMP...</td></tr>
       </tbody>
     </table>
   </div>
@@ -79,6 +55,5 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="gmp.js"></script>
-
 </body>
 </html>
