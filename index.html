@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>IPO Tracker Dashboard</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css?v=gold-premium" />
 </head>
 
 <body>
@@ -23,18 +23,39 @@
     <a onclick="showSection('Current IPOs')">Current IPOs</a>
     <a onclick="showSection('Upcoming IPOs')">Upcoming IPOs</a>
     <a onclick="showSection('Past IPOs')">Past IPOs</a>
-    <a onclick="showSection('GMP')">GMP</a>
-    <a onclick="showSection('News')">News</a>
+    <a href="gmp.html">GMP</a>
+    <a href="news.html">News</a>
+    <a href="allotment.html">Allotment</a>
+    <a href="admin.html">Admin</a>
   </nav>
 
   <button class="download" onclick="downloadCSV()">Download CSV</button>
 </header>
 
 <section class="kpi-wrap">
-  <div class="kpi"><span>📋</span><p>Total IPOs</p><h2 id="totalCount">0</h2></div>
-  <div class="kpi"><span>📈</span><p>Upcoming IPOs</p><h2 id="upcomingCount">0</h2></div>
-  <div class="kpi"><span>⏳</span><p>Open IPOs</p><h2 id="openCount">0</h2></div>
-  <div class="kpi"><span>✅</span><p>Closed IPOs</p><h2 id="closedCount">0</h2></div>
+  <div class="kpi">
+    <span>📋</span>
+    <p>Total IPOs</p>
+    <h2 id="totalCount">0</h2>
+  </div>
+
+  <div class="kpi">
+    <span>📈</span>
+    <p>Upcoming IPOs</p>
+    <h2 id="upcomingCount">0</h2>
+  </div>
+
+  <div class="kpi">
+    <span>⏳</span>
+    <p>Open IPOs</p>
+    <h2 id="openCount">0</h2>
+  </div>
+
+  <div class="kpi">
+    <span>✅</span>
+    <p>Closed IPOs</p>
+    <h2 id="closedCount">0</h2>
+  </div>
 </section>
 
 <section class="filter-panel">
@@ -63,7 +84,6 @@
   <button onclick="quickFilter('Closed')">Closed</button>
 </section>
 
-<!-- NEW WIDGET SECTION -->
 <section class="widget-grid">
   <div class="widget-card">
     <div class="widget-head">
@@ -96,6 +116,64 @@
 
 <section class="table-card">
   <div class="table-head">
+    <h2>Subscription Analytics</h2>
+    <p>Demand ranking</p>
+  </div>
+
+  <div class="subscription-grid">
+    <div class="sub-card">
+      <p>Highest Total Subscription</p>
+      <h2 id="highestTotalSub">-</h2>
+    </div>
+
+    <div class="sub-card">
+      <p>Highest Retail Demand</p>
+      <h2 id="highestRetailSub">-</h2>
+    </div>
+
+    <div class="sub-card">
+      <p>Highest QIB Demand</p>
+      <h2 id="highestQibSub">-</h2>
+    </div>
+
+    <div class="sub-card">
+      <p>Highest NII Demand</p>
+      <h2 id="highestNiiSub">-</h2>
+    </div>
+  </div>
+</section>
+
+<section class="table-card">
+  <div class="table-head">
+    <h2>IPO Scoring Engine</h2>
+    <p>AI-style demand score</p>
+  </div>
+
+  <div class="subscription-grid">
+    <div class="sub-card">
+      <p>Top Scored IPO</p>
+      <h2 id="topScoredIPO">-</h2>
+    </div>
+
+    <div class="sub-card">
+      <p>Highest Score</p>
+      <h2 id="highestScore">-</h2>
+    </div>
+
+    <div class="sub-card">
+      <p>Hot IPOs</p>
+      <h2 id="hotIPOCount">0</h2>
+    </div>
+
+    <div class="sub-card">
+      <p>Moderate IPOs</p>
+      <h2 id="moderateIPOCount">0</h2>
+    </div>
+  </div>
+</section>
+
+<section class="table-card">
+  <div class="table-head">
     <h2>IPO Market List</h2>
     <p id="recordCount">0 records</p>
   </div>
@@ -115,6 +193,8 @@
           <th>Close</th>
           <th>Allotment</th>
           <th>Listing</th>
+          <th>Score</th>
+          <th>Signal</th>
           <th>Status</th>
           <th>Actions</th>
         </tr>
@@ -122,7 +202,7 @@
 
       <tbody id="ipoTableBody">
         <tr>
-          <td colspan="13">Loading IPO data...</td>
+          <td colspan="15">Loading IPO data...</td>
         </tr>
       </tbody>
     </table>
