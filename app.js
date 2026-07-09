@@ -8,7 +8,7 @@ let allIPOs = [];
 
 async function fetchAllIPOs() {
   const tableBody = document.getElementById("ipoTableBody");
-  tableBody.innerHTML = `<tr><td colspan="15">Loading IPO data...</td></tr>`;
+  tableBody.innerHTML = `<tr><td colspan="13">Loading IPO data...</td></tr>`;
 
   const { data, error } = await supabaseClient
     .from("ipos")
@@ -26,140 +26,21 @@ async function fetchAllIPOs() {
     .order("open_date", { ascending: true });
 
   if (error) {
-    tableBody.innerHTML = `<tr><td colspan="15">Error: ${error.message}</td></tr>`;
+    tableBody.innerHTML = `<tr><td colspan="13">Error: ${error.message}</td></tr>`;
     return;
   }
 
   allIPOs = data || [];
   updateStats(allIPOs);
   renderWidgets(allIPOs);
-  renderSubscriptionAnalytics(allIPOs);
-  renderScoringAnalytics(allIPOs);
   renderTable(allIPOs);
-}
-
-function getAutoStatus(ipo) {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  const openDate = ipo.open_date ? new Date(ipo.open_date) : null;
-  const closeDate = ipo.close_date ? new Date(ipo.close_date) : null;
-
-  if (openDate) openDate.setHours(0, 0, 0, 0);
-  if (closeDate) closeDate.setHours(0, 0, 0, 0);
-
-  if (openDate && today < openDate) return "Upcoming";
-  if (openDate && closeDate && today >= openDate && today <= closeDate) return "Open";
-  if (closeDate && today > closeDate) return "Closed";
-
-  return ipo.status || "Upcoming";
-}
-
-function parseSub(value) {
-  if (!value) return 0;
-  return parseFloat(String(value).replace(/[^\d.-]/g, "")) || 0;
-}
-
-function getLive(ipo) {
-  return ipo.ipo_live_updates && ipo.ipo_live_updates.length
-    ? ipo.ipo_live_updates[0]
-    : {};
-}
-
-function safe(v) {
-  return v || "-";
 }
 
 function updateStats(data) {
   document.getElementById("totalCount").innerText = data.length;
-  document.getElementById("upcomingCount").innerText =
-    data.filter(x => getAutoStatus(x) === "Upcoming").length;
-  document.getElementById("openCount").innerText =
-    data.filter(x => getAutoStatus(x) === "Open").length;
-  document.getElementById("closedCount").innerText =
-    data.filter(x => getAutoStatus(x) === "Closed").length;
-}
-
-function renderSubscriptionAnalytics(data) {
-  let highestTotal = 0;
-  let highestRetail = 0;
-  let highestQib = 0;
-  let highestNii = 0;
-
-  data.forEach(ipo => {
-    const live = getLive(ipo);
-    highestTotal = Math.max(highestTotal, parseSub(live.total_subscription));
-    highestRetail = Math.max(highestRetail, parseSub(live.retail_subscription));
-    highestQib = Math.max(highestQib, parseSub(live.qib_subscription));
-    highestNii = Math.max(highestNii, parseSub(live.nii_subscription));
-  });
-
-  document.getElementById("highestTotalSub").innerText = highestTotal ? `${highestTotal}x` : "-";
-  document.getElementById("highestRetailSub").innerText = highestRetail ? `${highestRetail}x` : "-";
-  document.getElementById("highestQibSub").innerText = highestQib ? `${highestQib}x` : "-";
-  document.getElementById("highestNiiSub").innerText = highestNii ? `${highestNii}x` : "-";
-}
-
-function calculateIPOScore(ipo) {
-  const live = getLive(ipo);
-
-  const gmp = parseSub(live.gmp);
-  const total = parseSub(live.total_subscription);
-  const retail = parseSub(live.retail_subscription);
-  const qib = parseSub(live.qib_subscription);
-  const nii = parseSub(live.nii_subscription);
-
-  let score = 0;
-
-  score += Math.min(gmp, 100) * 0.30;
-  score += Math.min(total * 10, 100) * 0.30;
-  score += Math.min(retail * 10, 100) * 0.15;
-  score += Math.min(qib * 10, 100) * 0.15;
-  score += Math.min(nii * 10, 100) * 0.10;
-
-  return Math.round(score);
-}
-
-function getScoreClass(score) {
-  if (score >= 80) return "score-hot";
-  if (score >= 50) return "score-mid";
-  return "score-low";
-}
-
-function getSignal(score) {
-  if (score >= 80) return "🔥 Hot IPO";
-  if (score >= 50) return "🟡 Moderate";
-  return "🔴 Weak";
-}
-
-function getSignalClass(score) {
-  if (score >= 80) return "signal-pill signal-hot";
-  if (score >= 50) return "signal-pill signal-mid";
-  return "signal-pill signal-low";
-}
-
-function renderScoringAnalytics(data) {
-  let topIPO = "-";
-  let highestScore = 0;
-  let hotCount = 0;
-  let moderateCount = 0;
-
-  data.forEach(ipo => {
-    const score = calculateIPOScore(ipo);
-
-    if (score > highestScore) {
-      highestScore = score;
-      topIPO = ipo.company_name || "-";
-    }
-
-    if (score >= 80) hotCount++;
-    if (score >= 50 && score < 80) moderateCount++;
-  });
-
-  document.getElementById("topScoredIPO").innerText = topIPO;
-  document.getElementById("highestScore").innerText = highestScore ? `${highestScore}/100` : "-";
-  document.getElementById("hotIPOCount").innerText = hotCount;
-  document.getElementById("moderateIPOCount").innerText = moderateCount;
+  document.getElementById("upcomingCount").innerText = data.filter(x => x.status === "Upcoming").length;
+  document.getElementById("openCount").innerText = data.filter(x => x.status === "Open").length;
+  document.getElementById("closedCount").innerText = data.filter(x => x.status === "Closed").length;
 }
 
 function renderWidgets(data) {
@@ -190,6 +71,7 @@ function renderClosingWidget(data) {
 
   const today = new Date().toISOString().split("T")[0];
   const count = data.filter(x => x.close_date === today).length;
+
   container.innerHTML = `<div class="widget-big-number">${count}</div>`;
 }
 
@@ -199,6 +81,7 @@ function renderListingWidget(data) {
 
   const today = new Date().toISOString().split("T")[0];
   const count = data.filter(x => x.listing_date === today).length;
+
   container.innerHTML = `<div class="widget-big-number">${count}</div>`;
 }
 
@@ -225,7 +108,7 @@ function applyFilters() {
 
     return (
       (name.includes(search) || symbol.includes(search)) &&
-      (status === "" || getAutoStatus(ipo) === status) &&
+      (status === "" || ipo.status === status) &&
       (type === "" || ipo.ipo_type === type)
     );
   });
@@ -246,12 +129,15 @@ function resetFilters() {
 }
 
 function showSection(sectionName) {
-  if (sectionName === "Dashboard") return resetFilters();
+  if (sectionName === "Dashboard") {
+    resetFilters();
+    return;
+  }
   if (sectionName === "Current IPOs") return quickFilter("Open");
   if (sectionName === "Upcoming IPOs") return quickFilter("Upcoming");
   if (sectionName === "Past IPOs") return quickFilter("Closed");
-  if (sectionName === "GMP") return window.location.href = "gmp.html";
-  if (sectionName === "News") return window.location.href = "news.html";
+  if (sectionName === "GMP") return alert("GMP Dashboard coming soon.");
+  if (sectionName === "News") return alert("IPO News coming soon.");
 }
 
 function badgeClass(status) {
@@ -260,19 +146,27 @@ function badgeClass(status) {
   return "badge badge-upcoming";
 }
 
+function safe(v) {
+  return v || "-";
+}
+
+function getLive(ipo) {
+  return ipo.ipo_live_updates && ipo.ipo_live_updates.length
+    ? ipo.ipo_live_updates[0]
+    : {};
+}
+
 function renderTable(data) {
   const tbody = document.getElementById("ipoTableBody");
   document.getElementById("recordCount").innerText = `${data.length} records`;
 
   if (!data.length) {
-    tbody.innerHTML = `<tr><td colspan="15">No IPO data found.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="13">No IPO data found.</td></tr>`;
     return;
   }
 
   tbody.innerHTML = data.map(ipo => {
     const live = getLive(ipo);
-    const autoStatus = getAutoStatus(ipo);
-    const score = calculateIPOScore(ipo);
 
     return `
       <tr>
@@ -290,9 +184,7 @@ function renderTable(data) {
         <td>${safe(ipo.close_date)}</td>
         <td>${safe(ipo.allotment_date)}</td>
         <td>${safe(ipo.listing_date)}</td>
-        <td class="${getScoreClass(score)}">${score}/100</td>
-        <td><span class="${getSignalClass(score)}">${getSignal(score)}</span></td>
-        <td><span class="${badgeClass(autoStatus)}">${autoStatus}</span></td>
+        <td><span class="${badgeClass(ipo.status)}">${safe(ipo.status)}</span></td>
         <td class="actions">
           ${ipo.rhp_url ? `<a href="${ipo.rhp_url}" target="_blank">RHP</a>` : ""}
           ${ipo.registrar_url ? `<a class="blue" href="${ipo.registrar_url}" target="_blank">Allotment</a>` : ""}
@@ -303,7 +195,7 @@ function renderTable(data) {
 }
 
 function downloadCSV() {
-  alert("CSV will be updated in next phase.");
+  alert("CSV export ready");
 }
 
 document.addEventListener("DOMContentLoaded", fetchAllIPOs);
