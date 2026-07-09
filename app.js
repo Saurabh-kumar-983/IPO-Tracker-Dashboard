@@ -71,7 +71,6 @@ function renderClosingWidget(data) {
 
   const today = new Date().toISOString().split("T")[0];
   const count = data.filter(x => x.close_date === today).length;
-
   container.innerHTML = `<div class="widget-big-number">${count}</div>`;
 }
 
@@ -81,7 +80,6 @@ function renderListingWidget(data) {
 
   const today = new Date().toISOString().split("T")[0];
   const count = data.filter(x => x.listing_date === today).length;
-
   container.innerHTML = `<div class="widget-big-number">${count}</div>`;
 }
 
@@ -127,17 +125,47 @@ function resetFilters() {
   document.getElementById("typeFilter").value = "";
   renderTable(allIPOs);
 }
-
 function showSection(sectionName) {
+  document.querySelectorAll("nav a").forEach(link => {
+    link.classList.remove("active");
+  });
+
+  const navLinks = document.querySelectorAll("nav a");
+  navLinks.forEach(link => {
+    if (link.innerText.trim() === sectionName) {
+      link.classList.add("active");
+    }
+  });
+
   if (sectionName === "Dashboard") {
     resetFilters();
     return;
   }
-  if (sectionName === "Current IPOs") return quickFilter("Open");
-  if (sectionName === "Upcoming IPOs") return quickFilter("Upcoming");
-  if (sectionName === "Past IPOs") return quickFilter("Closed");
-  if (sectionName === "GMP") return alert("GMP Dashboard coming soon.");
-  if (sectionName === "News") return alert("IPO News coming soon.");
+
+  if (sectionName === "Current IPOs") {
+    quickFilter("Open");
+    return;
+  }
+
+  if (sectionName === "Upcoming IPOs") {
+    quickFilter("Upcoming");
+    return;
+  }
+
+  if (sectionName === "Past IPOs") {
+    quickFilter("Closed");
+    return;
+  }
+
+  if (sectionName === "GMP") {
+    alert("GMP Dashboard coming in Phase 4B.");
+    return;
+  }
+
+  if (sectionName === "News") {
+    alert("IPO News section coming in Phase 4C.");
+    return;
+  }
 }
 
 function badgeClass(status) {
@@ -195,7 +223,42 @@ function renderTable(data) {
 }
 
 function downloadCSV() {
-  alert("CSV export ready");
+  const rows = [
+    ["Company", "Symbol", "Type", "Price Band", "Issue Size", "Lot Size", "GMP", "Total Subscription", "Open", "Close", "Allotment", "Listing", "Status"],
+    ...allIPOs.map(ipo => {
+      const live = getLive(ipo);
+
+      return [
+        safe(ipo.company_name),
+        safe(ipo.symbol),
+        safe(ipo.ipo_type),
+        safe(ipo.price_band),
+        safe(ipo.issue_size),
+        safe(ipo.lot_size),
+        live.gmp || "-",
+        live.total_subscription || "-",
+        safe(ipo.open_date),
+        safe(ipo.close_date),
+        safe(ipo.allotment_date),
+        safe(ipo.listing_date),
+        safe(ipo.status)
+      ];
+    })
+  ];
+
+  const csv = rows.map(row =>
+    row.map(value => `"${String(value).replace(/"/g, '""')}"`).join(",")
+  ).join("\n");
+
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "ipo-tracker.csv";
+  a.click();
+
+  URL.revokeObjectURL(url);
 }
 
 document.addEventListener("DOMContentLoaded", fetchAllIPOs);
