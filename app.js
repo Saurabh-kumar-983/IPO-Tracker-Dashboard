@@ -70,16 +70,14 @@ function safe(v) {
   return v || "-";
 }
 
-function setText(id, value) {
-  const el = document.getElementById(id);
-  if (el) el.innerText = value;
-}
-
 function updateStats(data) {
-  setText("totalCount", data.length);
-  setText("upcomingCount", data.filter(x => getAutoStatus(x) === "Upcoming").length);
-  setText("openCount", data.filter(x => getAutoStatus(x) === "Open").length);
-  setText("closedCount", data.filter(x => getAutoStatus(x) === "Closed").length);
+  document.getElementById("totalCount").innerText = data.length;
+  document.getElementById("upcomingCount").innerText =
+    data.filter(x => getAutoStatus(x) === "Upcoming").length;
+  document.getElementById("openCount").innerText =
+    data.filter(x => getAutoStatus(x) === "Open").length;
+  document.getElementById("closedCount").innerText =
+    data.filter(x => getAutoStatus(x) === "Closed").length;
 }
 
 function renderSubscriptionAnalytics(data) {
@@ -96,10 +94,10 @@ function renderSubscriptionAnalytics(data) {
     highestNii = Math.max(highestNii, parseSub(live.nii_subscription));
   });
 
-  setText("highestTotalSub", highestTotal ? `${highestTotal}x` : "-");
-  setText("highestRetailSub", highestRetail ? `${highestRetail}x` : "-");
-  setText("highestQibSub", highestQib ? `${highestQib}x` : "-");
-  setText("highestNiiSub", highestNii ? `${highestNii}x` : "-");
+  document.getElementById("highestTotalSub").innerText = highestTotal ? `${highestTotal}x` : "-";
+  document.getElementById("highestRetailSub").innerText = highestRetail ? `${highestRetail}x` : "-";
+  document.getElementById("highestQibSub").innerText = highestQib ? `${highestQib}x` : "-";
+  document.getElementById("highestNiiSub").innerText = highestNii ? `${highestNii}x` : "-";
 }
 
 function calculateIPOScore(ipo) {
@@ -158,11 +156,10 @@ function renderScoringAnalytics(data) {
     if (score >= 50 && score < 80) moderateCount++;
   });
 
-  setText("topScoredIPO", topIPO);
-  setText("highestScore", highestScore ? `${highestScore}/100` : "-");
-  setText("highestScoreCard", highestScore ? `${highestScore}/100` : "-");
-  setText("hotIPOCount", hotCount);
-  setText("moderateIPOCount", moderateCount);
+  document.getElementById("topScoredIPO").innerText = topIPO;
+  document.getElementById("highestScore").innerText = highestScore ? `${highestScore}/100` : "-";
+  document.getElementById("hotIPOCount").innerText = hotCount;
+  document.getElementById("moderateIPOCount").innerText = moderateCount;
 }
 
 function renderWidgets(data) {
@@ -237,20 +234,14 @@ function applyFilters() {
 }
 
 function quickFilter(status) {
-  const statusFilter = document.getElementById("statusFilter");
-  if (statusFilter) statusFilter.value = status;
+  document.getElementById("statusFilter").value = status;
   applyFilters();
 }
 
 function resetFilters() {
-  const searchInput = document.getElementById("searchInput");
-  const statusFilter = document.getElementById("statusFilter");
-  const typeFilter = document.getElementById("typeFilter");
-
-  if (searchInput) searchInput.value = "";
-  if (statusFilter) statusFilter.value = "";
-  if (typeFilter) typeFilter.value = "";
-
+  document.getElementById("searchInput").value = "";
+  document.getElementById("statusFilter").value = "";
+  document.getElementById("typeFilter").value = "";
   renderTable(allIPOs);
 }
 
@@ -271,9 +262,7 @@ function badgeClass(status) {
 
 function renderTable(data) {
   const tbody = document.getElementById("ipoTableBody");
-  if (!tbody) return;
-
-  setText("recordCount", `${data.length} records`);
+  document.getElementById("recordCount").innerText = `${data.length} records`;
 
   if (!data.length) {
     tbody.innerHTML = `<tr><td colspan="15">No IPO data found.</td></tr>`;
@@ -314,46 +303,7 @@ function renderTable(data) {
 }
 
 function downloadCSV() {
-  const rows = [
-    ["Company", "Symbol", "Type", "Price Band", "Issue Size", "Lot Size", "GMP", "Total Subscription", "Open", "Close", "Allotment", "Listing", "Score", "Signal", "Status"],
-    ...allIPOs.map(ipo => {
-      const live = getLive(ipo);
-      const autoStatus = getAutoStatus(ipo);
-      const score = calculateIPOScore(ipo);
-
-      return [
-        safe(ipo.company_name),
-        safe(ipo.symbol),
-        safe(ipo.ipo_type),
-        safe(ipo.price_band),
-        safe(ipo.issue_size),
-        safe(ipo.lot_size),
-        live.gmp || "-",
-        live.total_subscription || "-",
-        safe(ipo.open_date),
-        safe(ipo.close_date),
-        safe(ipo.allotment_date),
-        safe(ipo.listing_date),
-        `${score}/100`,
-        getSignal(score),
-        autoStatus
-      ];
-    })
-  ];
-
-  const csv = rows.map(row =>
-    row.map(value => `"${String(value).replace(/"/g, '""')}"`).join(",")
-  ).join("\n");
-
-  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-  const url = URL.createObjectURL(blob);
-
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "ipo-tracker.csv";
-  a.click();
-
-  URL.revokeObjectURL(url);
+  alert("CSV will be updated in next phase.");
 }
 
 document.addEventListener("DOMContentLoaded", fetchAllIPOs);
