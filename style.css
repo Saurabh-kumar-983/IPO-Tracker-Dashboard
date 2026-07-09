@@ -974,3 +974,72 @@ tbody tr:hover{
   background:linear-gradient(135deg,#fee2e2,#fecaca);
   color:#991b1b;
 }
+/* PREMIUM NEWS / DETAIL / ALLOTMENT UPGRADE */
+
+.news-card,
+.detail-card,
+.note-box{
+  position:relative;
+  overflow:hidden;
+}
+
+.news-card::before,
+.detail-card::before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  height:4px;
+  background:linear-gradient(90deg,#ffba18,#2563eb,#16a34a);
+}
+
+.news-card{
+  background:
+    radial-gradient(circle at top left,rgba(255,186,24,.08),transparent 35%),
+    linear-gradient(180deg,#ffffff,#f8fbff);
+  transition:.28s ease;
+}
+
+.news-card h3{
+  color:#101726;
+  font-weight:900;
+}
+
+.news-tag{
+  background:#fff7dd;
+  color:#b77900;
+}
+
+.news-bottom a{
+  background:linear-gradient(135deg,#101726,#1b2638);
+  color:#ffca4f;
+}
+
+.detail-card{
+  background:
+    radial-gradient(circle at top right,rgba(37,99,235,.06),transparent 35%),
+    linear-gradient(180deg,#ffffff,#f8fbff);
+}
+
+.detail-grid div{
+  background:#ffffff;
+  box-shadow:0 8px 20px rgba(15,23,42,.04);
+}
+
+.detail-remarks,
+.note-box{
+  background:#fffaf0;
+  border-left:5px solid #ffba18;
+}
+
+.allotment-form button{
+  background:linear-gradient(135deg,#ffba18,#f5a623);
+  color:#101726;
+  border:none;
+}
+
+.allotment-form button:hover{
+  box-shadow:0 12px 28px rgba(255,186,24,.28);
+  transform:translateY(-2px);
+}
