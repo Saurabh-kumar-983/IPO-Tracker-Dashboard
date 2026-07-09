@@ -761,3 +761,59 @@ tbody tr:hover{background:#f8fbff}
   .hero-banner{margin:18px;padding:28px}
   .hero-left h1{font-size:32px}
 }
+/* PREMIUM WIDGET CARD UPGRADE */
+.widget-card{
+  background:
+    radial-gradient(circle at top left,rgba(255,186,24,.08),transparent 38%),
+    linear-gradient(180deg,#ffffff,#f8fbff);
+  border:1px solid rgba(37,99,235,.10);
+  position:relative;
+  overflow:hidden;
+}
+
+.widget-card::before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  height:4px;
+  background:linear-gradient(90deg,#ffba18,#2563eb,#16a34a);
+}
+
+.widget-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.widget-head h3{
+  font-size:21px;
+  font-weight:900;
+  color:#0f172a;
+}
+
+#gmpWidget div,
+#calendarWidget div{
+  background:#f8fafc;
+  border:1px solid #e5e7eb;
+  border-radius:14px;
+  padding:14px;
+  margin-bottom:10px;
+}
+
+#gmpWidget strong,
+#calendarWidget strong{
+  color:#0f172a;
+  font-weight:900;
+}
+
+.widget-big-number{
+  background:linear-gradient(135deg,#2563eb,#16a34a);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+.small-widget{
+  min-height:190px;
+}
