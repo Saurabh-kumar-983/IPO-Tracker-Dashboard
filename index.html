@@ -10,27 +10,63 @@
 <body>
 
 <header class="topbar">
-  <div class="brand">
-    <div class="logo">📊</div>
-    <div>
-      <h2>IPO Tracker</h2>
-      <p>India IPO Intelligence</p>
+  <!-- HERO SECTION -->
+
+<section class="hero-banner">
+
+  <div class="hero-left">
+
+    <span class="hero-tag">
+      ● LIVE IPO MARKET
+    </span>
+
+    <h1>
+      IPO Intelligence Dashboard
+    </h1>
+
+    <p>
+      Track Grey Market Premium, Subscription Demand, AI IPO Score,
+      Listing Calendar, Allotment Status and Market Momentum from one
+      professional dashboard.
+    </p>
+
+    <div class="hero-buttons">
+
+      <button onclick="quickFilter('Open')" class="hero-btn">
+        Open IPOs
+      </button>
+
+      <button onclick="quickFilter('Upcoming')" class="hero-btn secondary">
+        Upcoming IPOs
+      </button>
+
+      <a href="gmp.html" class="hero-link">
+        View GMP Dashboard →
+      </a>
+
     </div>
+
   </div>
 
-  <nav>
-    <a class="active" onclick="showSection('Dashboard')">Dashboard</a>
-    <a onclick="showSection('Current IPOs')">Current IPOs</a>
-    <a onclick="showSection('Upcoming IPOs')">Upcoming IPOs</a>
-    <a onclick="showSection('Past IPOs')">Past IPOs</a>
-    <a href="gmp.html">GMP</a>
-    <a href="news.html">News</a>
-    <a href="allotment.html">Allotment</a>
-    <a href="admin.html">Admin</a>
-  </nav>
+  <div class="hero-right">
 
-  <button class="download" onclick="downloadCSV()">Download CSV</button>
-</header>
+    <div class="market-score">
+
+      <small>Market Sentiment</small>
+
+      <h2 id="marketSignal">
+        Loading...
+      </h2>
+
+      <span id="highestScore">
+        --
+      </span>
+
+    </div>
+
+  </div>
+
+</section>
 
 <section class="kpi-wrap">
   <div class="kpi">
